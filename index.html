@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pocket LCB</title>
+        <style>
+            @font-face {
+                font-family: 'SCDream';
+                src: url('SCDream5.woff2') format('woff2'),
+                    url('SCDream5.woff') format('woff'),
+                    url('SCDream5.otf') format('opentype');
+                font-weight: 500;
+                font-style: normal;
+                font-display: swap;
+            }
+            @font-face {
+                font-family: 'ExcelsiorSans';
+                src: url('ExcelsiorSans.ttf') format('truetype');
+                font-weight: 500;
+                font-style: normal;
+                font-display: swap;
+            }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: 'SCDream', Arial, sans-serif;
+                background-color: #1a1f2b;
+                color: #e0e0e0;
+                padding: 20px;
+            }
+            .container {
+                max-width: 1000px;
+                margin: 0 auto;
+            }
+            /* Страницы */
+            .page {
+                display: none;
+                animation: fadeIn 0.3s ease;
+            }
+            .page.active {
+                display: block;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            /* Шапка и навигация */
+            .header-section {
+                background-color: #0f131c;
+                margin: -20px -20px 30px -20px;
+                padding: 40px 20px 0 20px;
+                border-bottom: 1px solid #2a3040;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            .header-section.no-logo {
+                padding-top: 20px;
+            }
+            .logo {
+                display: block;
+                margin: 0 auto 36px;
+                max-width: 280px;
+                height: auto;
+                transition: all 0.3s ease;
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .logo.hidden {
+                opacity: 0;
+                transform: translateY(-20px);
+                margin-bottom: 0;
+                height: 0;
+                max-height: 0;
+            }
+            .title-container {
+                text-align: center;
+                width: 100%;
+                transition: all 0.3s ease;
+            }
+            .header-section.no-logo .title-container {
+                margin-top: 0;
+            }
+            .page-title {
+                text-align: center;
+                color: #ffffff;
+                font-size: 1rem;
+                font-weight: 500;
+                padding: 12px 24px;
+                background: #0f131c;
+                display: inline-block;
+                margin: 0 auto 20px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border: 1px solid #2a3040;
+                border-radius: 25px;
+            }
+            .page-title:hover {
+                background: #2a3040;
+                border-color: #fff;
+                transform: scale(1.05);
+            }
+            /* Поиск и фильтры */
+            .search-container {
+                max-width: 100%;
+                margin: 0 auto 30px;
+                padding: 0 10px;
+            }
+            .search-row {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+            .search-input {
+                flex: 1;
+                padding: 12px 20px;
+                background: #0f131c;
+                border: 1px solid #2a3040;
+                border-radius: 25px;
+                color: #ffffff;
+                font-family: 'SCDream', Arial, sans-serif;
+                font-size: 1rem;
+                outline: none;
+                transition: all 0.3s ease;
+                min-width: 0;
+                -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+                -webkit-user-select: text;
+                -moz-user-select: text;
+                -ms-user-select: text;
+                user-select: text;
+            }
+            .search-input:focus {
+                border-color: #fff;
+                box-shadow: 0 0 10px rgba(22, 132, 155, 0.3);
+            }
+            .search-input::placeholder {
+                color: #888;
+            }
+            .search-options {
+                max-width: 100%;
+                padding: 0;
+                margin-bottom: 20px;
+            }
+            .checkbox-container {
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                color: #cccccc;
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+            .checkbox-container input {
+                display: none;
+            }
+            .checkmark {
+                width: 18px;
+                height: 18px;
+                background: #0f131c;
+                border: 1px solid #2a3040;
+                border-radius: 4px;
+                margin-right: 8px;
+                position: relative;
+                transition: all 0.3s ease;
+            }
+            .checkbox-container input:checked + .checkmark {
+                background: #fff;
+                border-color: #fff;
+            }
+            .checkbox-container input:checked + .checkmark::after {
+                content: "✓";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: black;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            .checkbox-container:hover .checkmark {
+                border-color: #fff;
+            }
+            .filter-btn {
+                padding: 12px 20px;
+                background: #0f131c;
+                border: 1px solid #2a3040;
+                border-radius: 25px;
+                color: #ffffff;
+                font-family: 'SCDream', Arial, sans-serif;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-weight: 500;
+            }
+            .filter-btn:hover {
+                background: #2a3040;
+                border-color: #fff;
+                transform: scale(1.05);
+            }
+            /* Грид подарков */
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, 96px);
+                justify-content: center;
+                gap: 10px;
+                margin-bottom: 30px;
+            }
+            .gift-item {
+                width: 96px;
+                height: 96px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border: 1px solid #2a3040;
+                border-radius: 12px;
+                padding: 0;
+                background: #0f131c;
+                position: relative;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            .gift-item::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 3px;
+                background-color: #2a3040;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                z-index: 1;
+            }
+            .gift-item:hover {
+                border: 1px solid #fff;
+                background-color: #2a3040;
+                transform: scale(1.05);
+            }
+            .gift-item:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+            .sin-wrath::after { background-color: #c9100f; }
+            .sin-lust::after { background-color: #e66728; }
+            .sin-sloth::after { background-color: #f2b53f; }
+            .sin-gluttony::after { background-color: #6c9c20; }
+            .sin-gloom::after { background-color: #16849b; }
+            .sin-pride::after { background-color: #185188; }
+            .sin-envy::after { background-color: #5c0288; }
+            .sin-none::after { background-color: #9f693a; }
+            .gift-item img.gift-image {
+                width: 64px;
+                height: 64px;
+                object-fit: contain;
+                border-radius: 6px;
+            }
+            .tier-text {
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                font-size: 28px;
+                font-family: 'ExcelsiorSans', Arial, sans-serif;
+                color: #FFD700;
+                text-shadow: 
+                    0 0 3px #ff0000,
+                    0 0 6px #ff4444,
+                    0 0 9px #ff6666;
+                z-index: 2;
+                line-height: 1;
+                
+            }
+            .tier-ex {
+                color: #7CFC00 !important;
+                text-shadow: 
+                    0 0 4px #ff0000,
+                    0 0 8px #ff4444,
+                    0 0 12px #ff6666 !important;
+            }
+            .keyword-icon {
+                position: absolute;
+                bottom: 4px;
+                right: 4px;
+                width: 24px;
+                height: 24px;
+                z-index: 2;
+                filter: drop-shadow(0 0 2px rgba(0,0,0,0.8));
+            }
+            .keyword-icon.keywordless {
+                display: none;
+            }
+            /* Модальное окно подарка */
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.85);
+                z-index: 1000;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+            .modal-content {
+                background: #1a1f2b;
+                padding: 30px;
+                border-radius: 16px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+                max-width: 450px;
+                width: 100%;
+                position: relative;
+                animation: modalShow 0.3s ease;
+                max-height: 90vh;
+                overflow-y: auto;
+                border: 1px solid #2a3040;
+            }
+            @keyframes modalShow {
+                from {
+                    opacity: 0;
+                    transform: translateY(-50px) scale(0.9);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+            .close-btn {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                background: #1a1f2b;
+                color: #e0e0e0;
+                border: 2px solid #2a3040;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                z-index: 1001;
+                font-weight: 500;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            .close-btn:hover {
+                background: #2a3040;
+                border-color: #3a4050;
+                transform: scale(1.1);
+            }
+            .close-btn:active {
+                background: #2a3040 !important;
+                transform: scale(0.95);
+            }
+            .modal-gift-image {
+                width: 100px;
+                height: 100px;
+                margin: 0 auto 20px;
+                display: block;
+                border-radius: 12px;
+                background: #0f131c;
+                padding: 8px;
+            }
+            .gift-name {
+                font-size: 1.8rem;
+                font-weight: 500;
+                color: #ffffff;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            .gift-attributes {
+                display: flex;
+                justify-content: center;
+                gap: 12px;
+                margin-bottom: 20px;
+                flex-wrap: wrap;
+            }
+            .attribute {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 1rem;
+                color: #cccccc;
+                padding: 8px 12px;
+                background: #0f131c;
+                border-radius: 8px;
+                white-space: nowrap;
+                font-weight: 500;
+            }
+            .attribute-price {
+                color: #ffffff !important;
+            }
+            .attribute-icon,
+            .coin-icon {
+                width: 24px;
+                height: 24px;
+                object-fit: contain;
+            }
+            .modal-tier {
+                font-size: 1rem;
+                font-weight: 500;
+                color: #FFD700;
+                text-shadow: 
+                    0 0 4px #ff0000,
+                    0 0 8px #ff4444;
+            }
+            .modal-tier-ex {
+                color: #7CFC00 !important;
+                text-shadow: 
+                    0 0 4px #ff0000,
+                    0 0 8px #ff4444 !important;
+            }
+            .gift-description {
+                color: #b0b0b0;
+                line-height: 1.5;
+                text-align: center;
+                margin-bottom: 20px;
+                font-size: 1rem;
+                font-weight: 500;
+            }
+            .keyword-text {
+                color: #e20000;
+                text-decoration: underline;
+                cursor: help;
+            }
+            .positive-text {
+                color: #fac400;
+                text-decoration: underline;
+                cursor: help;
+            }
+            .neutral-text {
+                color: #9f6a3a;
+                text-decoration: underline;
+                cursor: help;
+            }
+            .sin-badge {
+                padding: 6px 14px;
+                border-radius: 20px;
+                color: white;
+                font-size: 0.9rem;
+                font-weight: 500;
+                text-transform: uppercase;
+                display: inline-block;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            }
+            .description-icon {
+                width: 24px;
+                height: 24px;
+                vertical-align: middle;
+                display: inline !important;
+            }
+            .filters-modal-content {
+                max-width: 500px;
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+            .filters-section {
+                margin-bottom: 25px;
+            }
+            .filters-title {
+                font-size: 1.2rem;
+                color: #ffffff;
+                margin-bottom: 15px;
+                text-align: center;
+                font-weight: 500;
+            }
+            .filter-group {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+            .filter-option {
+                padding: 8px 12px;
+                background: #0f131c;
+                border: 1px solid #2a3040;
+                border-radius: 8px;
+                color: #cccccc;
+                cursor: pointer;
+                text-align: center;
+                transition: all 0.3s ease;
+                font-size: 0.9rem;
+                font-weight: 500;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            .filter-option:hover {
+                background: #2a3040;
+                border-color: #fff;
+            }
+            .filter-option.active {
+                background: white;
+                border-color: white;
+                color: black;
+            }
+            .sort-group {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .sort-option {
+                padding: 10px 15px;
+                background: #0f131c;
+                border: 1px solid #2a3040;
+                border-radius: 8px;
+                color: #cccccc;
+                cursor: pointer;
+                text-align: center;
+                transition: all 0.3s ease;
+                font-size: 0.9rem;
+                font-weight: 500;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            .sort-option:hover {
+                background: #2a3040;
+                border-color: #fff;
+            }
+            .sort-option.active {
+                background: white;
+                border-color: white;
+                color: black;
+            }
+            .reset-filters {
+                width: 100%;
+                padding: 12px;
+                background: white;
+                border: none;
+                border-radius: 8px;
+                color: black;
+                font-family: 'SCDream', Arial, sans-serif;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-weight: 500;
+                margin-top: 10px;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            .reset-filters:hover {
+                background: white;
+                transform: scale(1.05);
+            }
+            .reset-filters:active {
+                background: #f0f0f0 !important;
+                transform: scale(0.98);
+            }
+            /* Модальное окно навигации */
+            .navigation-section {
+                margin-bottom: 25px;
+            }
+            .navigation-group {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .navigation-option {
+                padding: 15px 20px;
+                background: #0f131c;
+                border: 1px solid #2a3040;
+                border-radius: 12px;
+                color: #cccccc;
+                cursor: pointer;
+                text-align: center;
+                transition: all 0.3s ease;
+                font-size: 1rem;
+                font-weight: 500;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            .navigation-option:hover {
+                background: #2a3040;
+                border-color: #fff;
+                transform: translateY(-2px);
+            }
+            .navigation-option:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+            .navigation-option.active {
+                background: white;
+                border-color: white;
+                color: black;
+                transform: scale(1.02);
+            }
+            .home-content {
+                text-align: center;
+                padding: 40px 20px;
+            }
+            .welcome-title {
+                font-size: 2.5rem;
+                color: #ffffff;
+                margin-bottom: 20px;
+                font-weight: 500;
+            }
+            .welcome-subtitle {
+                font-size: 1.2rem;
+                color: #b0b0b0;
+                margin-bottom: 40px;
+                line-height: 1.6;
+            }
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                margin-top: 40px;
+            }
+            .feature-card {
+                background: #0f131c;
+                padding: 25px;
+                border-radius: 12px;
+                border: 1px solid #2a3040;
+                transition: all 0.3s ease;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            .feature-card:hover {
+                transform: translateY(-5px);
+                border-color: #fff;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            }
+            .feature-icon {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+            }
+            .feature-title {
+                font-size: 1.3rem;
+                color: #ffffff;
+                margin-bottom: 10px;
+                font-weight: 500;
+            }
+            .feature-description {
+                color: #b0b0b0;
+                line-height: 1.5;
+                font-size: 0.95rem;
+            }
+            img,
+            .logo,
+            .gift-image,
+            .modal-gift-image,
+            .attribute-icon,
+            .coin-icon,
+            .keyword-icon,
+            .description-icon {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                -webkit-user-drag: none;
+                -khtml-user-drag: none;
+                -moz-user-drag: none;
+                -o-user-drag: none;
+                user-drag: none;
+                pointer-events: none;
+            }
+            @media (max-width: 768px) {
+                .grid {
+                    gap: 15px;
+                }
+                .welcome-title {
+                    font-size: 2rem;
+                }
+                .welcome-subtitle {
+                    font-size: 1.1rem;
+                }
+                .features-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+            @media (max-width: 480px) {
+                .grid {
+                    gap: 12px;
+                }
+                .dropdown-caret {
+                    width: 10px;
+                    height: 10px;
+                }
+                .logo {
+                    max-width: 260px;
+                    margin-bottom: 20px;
+                }
+                .search-options {
+                    margin-bottom: 20px;
+                }
+                .checkmark {
+                    width: 16px;
+                    height: 16px;
+                }
+                .filter-group {
+                    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                }
+                .modal-content {
+                    padding: 20px;
+                    margin: 10px;
+                }
+                .home-content {
+                    padding: 20px 10px;
+                }
+                .feature-card {
+                    padding: 20px;
+                }
+            }
+            .effect-tooltip {
+                position: fixed;
+                background: #1a1f2b;
+                border: 1px solid #2a3040;
+                border-radius: 8px;
+                padding: 12px;
+                color: #b0b0b0;
+                font-size: 0.9rem;
+                line-height: 1.4;
+                max-width: 300px;
+                z-index: 10000;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity 0.2s ease;
+                font-weight: 500;
+                display: none;
+                white-space: pre-line;
+            }
+            .effect-tooltip.visible {
+                opacity: 1;
+                display: block;
+            }
+            .effect-tooltip::after {
+                display: none;
+            }
+            /*.effect-tooltip.negative {
+                border-bottom: 3px solid #e20000;
+            }
+            .effect-tooltip.positive {
+                border-bottom: 3px solid #fac400;
+            }
+            .effect-tooltip.neutral {
+                border-bottom: 3px solid #9f6a3a;
+            }*/
+            @media (max-width: 480px) {
+                .effect-tooltip {
+                    max-width: 280px;
+                    font-size: 0.85rem;
+                    padding: 10px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header-section">
+                <img src="img/menu/logo.png" alt="Pocket LCB Logo" class="logo" onerror="this.style.display='none'">
+
+                <div class="title-container">
+                    <div class="page-title">
+                        E.G.O Gifts
+                        <svg class="dropdown-caret" width="16" height="16" viewBox="0 0 12 10" fill="none">
+                            <path d="M2 4 L6 8 L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="miter" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="page active" id="home-page">
+                <div class="home-content">
+                    <h1 class="welcome-title">Welcome to Pocket LCB</h1>
+                    <p class="welcome-subtitle">
+                        Your comprehensive companion for Limbus Company Battle data.
+                        <br> Browse E.G.O Gifts, Identities, and more with detailed information and filters.
+                    </p>
+                    
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🎁</div>
+                            <h3 class="feature-title">E.G.O Gifts</h3>
+                            <p class="feature-description">
+                                Browse all E.G.O Gifts with detailed information about effects, tiers, prices, and sin affinities. Filter by keyword and sort by price.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">👤</div>
+                            <h3 class="feature-title">Identities</h3>
+                            <p class="feature-description">
+                                View all character identities with their skills, stats, and progression paths. Compare different versions of your favorite characters.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h3 class="feature-title">E.G.O</h3>
+                            <p class="feature-description">
+                                Explore E.G.O equipment and abilities with comprehensive details on effects, costs, and strategic applications.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🎪</div>
+                            <h3 class="feature-title">MD Events & Packs</h3>
+                            <p class="feature-description">
+                                Discover Mirror Dungeon events and theme packs with rewards information and strategic recommendations.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page" id="md-events-page">
+                <div class="home-content">
+                    <h1 class="welcome-title">Mirror Dungeon Events</h1>
+                    <p class="welcome-subtitle">
+                        MD Events content will be available soon!
+                    </p>
+                </div>
+            </div>
+
+            <div class="page" id="md-theme-packs-page">
+                <div class="home-content">
+                    <h1 class="welcome-title">MD Theme Packs</h1>
+                    <p class="welcome-subtitle">
+                        MD Theme Packs content will be available soon!
+                    </p>
+                </div>
+            </div>
+
+            <div class="page" id="ego-gifts-page">
+                <div class="search-container">
+                    <div class="search-row">
+                        <input type="text" id="searchInput" placeholder="Search E.G.O Gifts..." class="search-input">
+                        <button class="filter-btn" id="openFilters">Filters</button>
+                    </div>
+                    <div class="search-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="searchInDescription">
+                            <span class="checkmark"></span> Search in description
+                        </label>
+                    </div>
+                </div>
+                <div class="grid" id="giftsGrid">
+                    
+                </div>
+            </div>
+
+            <div class="page" id="ego-page">
+                <div class="home-content">
+                    <h1 class="welcome-title">E.G.O</h1>
+                    <p class="welcome-subtitle">
+                        E.G.O content will be available soon!
+                    </p>
+                </div>
+            </div>
+
+            <div class="page" id="identities-page">
+                <div class="home-content">
+                    <h1 class="welcome-title">Identities</h1>
+                    <p class="welcome-subtitle">
+                        Identities content will be available soon!
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="giftModal">
+            <div class="modal-content">
+                <button class="close-btn" id="closeModal">&times;</button>
+                <img class="modal-gift-image" id="modalImage" src="" alt="Подарок">
+                <h2 class="gift-name" id="modalName"></h2>
+
+                <div class="gift-attributes">
+                    <div class="attribute">
+                        <span class="modal-tier" id="modalTier"></span>
+                    </div>
+                    <div class="attribute" id="keywordAttribute">
+                        <img class="attribute-icon" id="modalKeywordIcon" src="" alt="Ключевое слово">
+                        <span id="modalKeyword"></span>
+                    </div>
+                    <div class="attribute attribute-price" id="priceAttribute">
+                        <img class="coin-icon" src="img/menu/cost.png" alt="cost" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iOSIgY3k9IjkiIHI9IjgiIGZpbGw9IiNGRkQ3MDAiIHN0cm9rZT0iI0ZGQTUwMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CjxjaXJjbGUgY3g9IjkiIGN5PSI5IiByPSI1IiBmaWxsPSIjRkZGOUM0IiBzdHJva2U9IiNGRkE1MDAiIHN0cm9rZS13aWR0aD0iMC41Ii8+Cjx0ZXh0IHg9IjkiIHk9IjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNGRkE1MDAiPkM8L3RleHQ+Cjwvc3ZnPgo='">
+                        <span id="modalPrice"></span>
+                    </div>
+                </div>
+
+                <p class="gift-description" id="modalDescription"></p>
+
+                <div style="text-align: center;">
+                    <span class="sin-badge" id="modalSin"></span>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="filtersModal">
+            <div class="modal-content filters-modal-content">
+                <button class="close-btn" id="closeFiltersModal">&times;</button>
+                <h2 class="filters-title">Filters & Sorting</h2>
+
+                <div class="filters-section">
+                    <h3 class="filters-title">Filter by Sin</h3>
+                    <div class="filter-group" id="sinFilters">
+                        <div class="filter-option" data-sin="all">All Sins</div>
+                        <div class="filter-option" data-sin="wrath">Wrath</div>
+                        <div class="filter-option" data-sin="lust">Lust</div>
+                        <div class="filter-option" data-sin="sloth">Sloth</div>
+                        <div class="filter-option" data-sin="gluttony">Gluttony</div>
+                        <div class="filter-option" data-sin="gloom">Gloom</div>
+                        <div class="filter-option" data-sin="pride">Pride</div>
+                        <div class="filter-option" data-sin="envy">Envy</div>
+                    </div>
+                </div>
+
+                <div class="filters-section">
+                    <h3 class="filters-title">Filter by Keyword</h3>
+                    <div class="filter-group" id="keywordFilters">
+                        <div class="filter-option" data-keyword="all">All Keywords</div>
+                        <div class="filter-option" data-keyword="keywordless">Keywordless</div>
+                        <div class="filter-option" data-keyword="burn">Burn</div>
+                        <div class="filter-option" data-keyword="bleed">Bleed</div>
+                        <div class="filter-option" data-keyword="tremor">Tremor</div>
+                        <div class="filter-option" data-keyword="rupture">Rupture</div>
+                        <div class="filter-option" data-keyword="blunt">Blunt</div>
+                        <div class="filter-option" data-keyword="slash">Slash</div>
+                        <div class="filter-option" data-keyword="pierce">Pierce</div>
+                    </div>
+                </div>
+
+                <div class="filters-section">
+                    <h3 class="filters-title">Sort by Price</h3>
+                    <div class="sort-group">
+                        <div class="sort-option" data-sort="price-asc">Price: Low to High</div>
+                        <div class="sort-option" data-sort="price-desc">Price: High to Low</div>
+                    </div>
+                </div>
+
+                <div class="filters-section">
+                    <h3 class="filters-title">Sort by Tier</h3>
+                    <div class="sort-group">
+                        <div class="sort-option" data-sort="tier-asc">Tier: Low to High</div>
+                        <div class="sort-option" data-sort="tier-desc">Tier: High to Low</div>
+                    </div>
+                </div>
+
+                <button class="reset-filters" id="resetFilters">Reset All Filters</button>
+            </div>
+        </div>
+        <div class="modal" id="navigationModal">
+            <div class="modal-content filters-modal-content">
+                <button class="close-btn" id="closeNavigationModal">&times;</button>
+                <h2 class="filters-title">Navigation</h2>
+
+                <div class="navigation-section">
+                    <div class="navigation-group">
+                        <div class="navigation-option" data-page="home">Home</div>
+                        <div class="navigation-option" data-page="md-events">MD Events</div>
+                        <div class="navigation-option" data-page="md-theme-packs">MD Theme Packs</div>
+                        <div class="navigation-option active" data-page="ego-gifts">E.G.O Gifts</div>
+                        <div class="navigation-option" data-page="ego">E.G.O</div>
+                        <div class="navigation-option" data-page="identities">Identities</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="effects-data.js"></script>
+        <script src="gifts-data.js"></script>
+
+        <script>
+            function getGiftImagePath(giftId) {
+                return `img/gifts/gift${giftId}.png`;
+            }
+
+            function getEffectImagePath(effectName) {
+                return `img/effects/${effectName}.png`;
+            }
+
+            const tierMapping = {
+                1: "I",
+                2: "II", 
+                3: "III",
+                4: "IV",
+                5: "V",
+                6: "EX"
+            };
+    
+            const sinColors = {
+                wrath: "#c9100f",
+                lust: "#e66728",
+                sloth: "#f2b53f",
+                gluttony: "#6c9c20",
+                gloom: "#16849b",
+                pride: "#185188",
+                envy: "#5c0288",
+                none: "#9f693a"
+            };
+    
+            const sinNames = {
+                wrath: "WRATH",
+                lust: "LUST",
+                sloth: "SLOTH",
+                gluttony: "GLUTTONY",
+                gloom: "GLOOM",
+                pride: "PRIDE",
+                envy: "ENVY",
+                none: "NONE"
+            };
+    
+            const keywordNames = {
+                burn: "Burn",
+                bleed: "Bleed",
+                tremor: "Tremor",
+                rupture: "Rupture",
+                sinking: "Sinking",
+                poise: "Poise",
+                charge: "Charge",
+                blunt: "Blunt",
+                slash: "Slash",
+                pierce: "Pierce",
+                keywordless: "Keywordless"
+            };
+    
+            const giftsGrid = document.getElementById('giftsGrid');
+            const giftModal = document.getElementById('giftModal');
+            const closeModal = document.getElementById('closeModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalName = document.getElementById('modalName');
+            const modalPrice = document.getElementById('modalPrice');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalTier = document.getElementById('modalTier');
+            const modalKeywordIcon = document.getElementById('modalKeywordIcon');
+            const modalKeyword = document.getElementById('modalKeyword');
+            const modalSin = document.getElementById('modalSin');
+            const keywordAttribute = document.getElementById('keywordAttribute');
+            const priceAttribute = document.getElementById('priceAttribute');
+            const openFiltersBtn = document.getElementById('openFilters');
+            const navigationModal = document.getElementById('navigationModal');
+            const closeNavigationModal = document.getElementById('closeNavigationModal');
+            const pageTitle = document.querySelector('.page-title');
+            const effectTooltip = document.getElementById('effectTooltip');
+    
+            function createCoinIcon() {
+                return `data:image/svg+xml;base64,${btoa(`
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="9" cy="9" r="8" fill="#FFD700" stroke="#FFA500" stroke-width="1"/>
+                        <circle cx="9" cy="9" r="5" fill="#FFF9C4" stroke="#FFA500" stroke-width="0.5"/>
+                        <text x="9" y="12" text-anchor="middle" font-family="Arial" font-size="7" font-weight="bold" fill="#FFA500">C</text>
+                    </svg>
+                `)}`;
+            }
+    
+            function createFallbackIcon(keyword) {
+                const firstLetter = keyword.charAt(0).toUpperCase();
+                return `data:image/svg+xml;base64,${btoa(`
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="18" height="18" fill="#2196F3" rx="4"/>
+                        <text x="9" y="13" text-anchor="middle" font-family="Arial" font-size="8" fill="white" font-weight="bold">${firstLetter}</text>
+                    </svg>
+                `)}`;
+            }
+    
+            function setupSearch() {
+                const searchInput = document.getElementById('searchInput');
+                const searchInDescriptionCheckbox = document.getElementById('searchInDescription');
+                
+                function performSearch() {
+                    const searchTerm = searchInput.value.toLowerCase().trim();
+                    const searchInDescription = searchInDescriptionCheckbox.checked;
+                    const giftItems = document.querySelectorAll('.gift-item');
+                    
+                    giftItems.forEach(item => {
+                        // Получаем ID из атрибута src изображения
+                        const giftImage = item.querySelector('.gift-image');
+                        if (!giftImage) {
+                            item.style.display = 'none';
+                            return;
+                        }
+                        
+                        // Извлекаем ID из пути к изображению
+                        const src = giftImage.src;
+                        const giftIdMatch = src.match(/gift(\d+)\.png/);
+                        
+                        if (!giftIdMatch) {
+                            item.style.display = 'none';
+                            return;
+                        }
+                        
+                        const giftId = parseInt(giftIdMatch[1]);
+                        const gift = giftsData.find(g => g.id === giftId);
+                        
+                        if (!gift) {
+                            item.style.display = 'none';
+                            return;
+                        }
+                        
+                        const giftName = gift.name.toLowerCase();
+                        const giftDescription = gift.description.toLowerCase();
+                        
+                        const nameMatch = giftName.includes(searchTerm);
+                        const descriptionMatch = searchInDescription && giftDescription.includes(searchTerm);
+                        
+                        if (nameMatch || descriptionMatch || searchTerm === '') {
+                            item.style.display = 'flex';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                }
+                
+                searchInput.addEventListener('input', performSearch);
+                searchInDescriptionCheckbox.addEventListener('change', performSearch);
+            }
+    
+            function formatDescription(description, keyword) {
+                if (!description) return '';
+                return description;
+            }
+    
+            function initializeGrid() {
+                giftsData.forEach(gift => {
+                    const giftElement = document.createElement('div');
+                    giftElement.className = `gift-item sin-${gift.sin}`;
+                    
+                    const tierClass = gift.tier === 6 ? 'tier-text tier-ex' : 'tier-text';
+                    const keywordClass = gift.keyword === 'keywordless' ? 'keyword-icon keywordless' : 'keyword-icon';
+                    
+                    giftElement.innerHTML = `
+                        <img class="gift-image" src="${getGiftImagePath(gift.id)}" alt="${gift.name}" 
+                            onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3IiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjcyIiBoZWlnaHQ9IjcyIiBmaWxsPSIjMGYxMzFjIi8+CjxwYXRoIGQ9Ik0zNiAxOEMzOC4yMDkxIDE4IDQwIDE5Ljc5MDkgNDAgMjJWNDBINDZDNTAuNDE4MyA0MCA1NCA0My41ODE3IDU0IDQ4QzU0IDUyLjQxODMgNTAuNDE4MyA1NiA0NiA1Nkg0MlY2NEM0MiA2Ni4yMDkxIDQwLjIwOTEgNjggMzggNjhDMzUuNzkwOSA2OCAzNCA2Ni4yMDkxIDM0IDY0VjU2SDMwQzI1LjU4MTcgNTYgMjIgNTIuNDE4MyAyMiA0OEMyMiA0My41ODE3IDI1LjU4MTcgNDAgMzAgNDBIMzhWMjJDMzggMTkuNzkwOSAzNS43OTA5IDE4IDMzIDE4QzMwLjIwOTEgMTggMjggMTkuNzkwOSAyOCAyMlYzNEgyNEMxOS41ODE3IDM0IDE2IDMwLjQxODMgMTYgMjZDMTYgMjEuNTgxNyAxOS41ODE3IDE4IDI0IDE4SDMyVjIyQzMyIDE5Ljc5MDkgMjkuNzkwOSAxOCAyNyAxOEMyNC4yMDkxIDE4IDIyIDE5Ljc5MDkgMjIgMjJWMzRIMThDMTMuNTgxNyAzNCAxMCAzMC40MTgzIDEwIDI2QzEwIDIxLjU4MTcgMTMuNTgxNyAxOCAxOCAxOEgyNlYyMkMyNiAxOS43OTA5IDIzLjc5MDkgMTggMjEgMThaIiBmaWxsPSIjMzAzODQ3Ii8+Cjwvc3ZnPg=='">
+                        <div class="${tierClass}">${tierMapping[gift.tier]}</div>
+                        ${gift.keyword !== 'keywordless' ? 
+                            `<img class="${keywordClass}" src="${getEffectImagePath(gift.keyword)}" alt="${keywordNames[gift.keyword] || gift.keyword}"
+                                onerror="this.src='${createFallbackIcon(gift.keyword)}'">` 
+                            : ''}
+                    `;
+                    
+                    giftElement.addEventListener('click', () => openGiftModal(gift));
+                    giftsGrid.appendChild(giftElement);
+                });
+                
+                setupSearch();
+                initializeFilters();
+                initializeNavigation();
+                initializeEffectTooltips();
+                
+                applyFiltersAndSort();
+            }
+
+            function openGiftModal(gift) {
+                modalImage.src = getGiftImagePath(gift.id);
+                modalImage.alt = gift.name;
+                modalName.textContent = gift.name;
+
+                modalPrice.textContent = gift.price;
+                    
+                modalDescription.innerHTML = formatDescription(gift.description, gift.keyword);
+                    
+                const tierClass = gift.tier === 6 ? 'modal-tier modal-tier-ex' : 'modal-tier';
+                modalTier.className = tierClass;
+                modalTier.textContent = `Tier ${tierMapping[gift.tier]}`;
+                    
+                if (gift.keyword === 'keywordless') {
+                    keywordAttribute.style.display = 'none';
+                } else {
+                    keywordAttribute.style.display = 'flex';
+                    modalKeywordIcon.src = getEffectImagePath(gift.keyword);
+                    modalKeywordIcon.alt = keywordNames[gift.keyword] || gift.keyword;
+                    modalKeywordIcon.onerror = function() {
+                        this.src = createFallbackIcon(gift.keyword);
+                    };
+                    modalKeyword.textContent = keywordNames[gift.keyword] || gift.keyword;
+                }
+                    
+                modalSin.textContent = sinNames[gift.sin] || gift.sin;
+                modalSin.style.backgroundColor = sinColors[gift.sin] || '#9f693a';
+                    
+                giftModal.style.display = 'flex';
+            }
+    
+            function closeGiftModal() {
+                giftModal.style.display = 'none';
+                keywordAttribute.style.display = 'flex';
+            }
+    
+            giftModal.addEventListener('click', (e) => {
+                if (e.target === giftModal) {
+                    closeGiftModal();
+                }
+            });
+    
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeGiftModal();
+                }
+            });
+    
+            document.addEventListener('DOMContentLoaded', initializeGrid);
+            closeModal.addEventListener('click', closeGiftModal);
+    
+            const filtersModal = document.getElementById('filtersModal');
+            const closeFiltersModal = document.getElementById('closeFiltersModal');
+            const resetFiltersBtn = document.getElementById('resetFilters');
+    
+            let currentFilters = {
+                sin: 'all',
+                keyword: 'all',
+                sort: 'id-asc'
+            };
+    
+            function applyFiltersAndSort() {
+                let filteredGifts = [...giftsData];
+                
+                if (currentFilters.sin !== 'all') {
+                    filteredGifts = filteredGifts.filter(gift => gift.sin === currentFilters.sin);
+                }
+                
+                if (currentFilters.keyword !== 'all') {
+                    filteredGifts = filteredGifts.filter(gift => gift.keyword === currentFilters.keyword);
+                }
+                
+                switch (currentFilters.sort) {
+                    case 'price-asc':
+                        filteredGifts.sort((a, b) => parseInt(a.price) - parseInt(b.price));
+                        break;
+                    case 'price-desc':
+                        filteredGifts.sort((a, b) => parseInt(b.price) - parseInt(a.price));
+                        break;
+                    case 'tier-asc':
+                        filteredGifts.sort((a, b) => a.tier - b.tier);
+                        break;
+                    case 'tier-desc':
+                        filteredGifts.sort((a, b) => b.tier - a.tier);
+                        break;
+                    case 'id-asc':
+                    default:
+                        filteredGifts.sort((a, b) => a.id - b.id);
+                        break;
+                }
+                
+                recreateGrid(filteredGifts);
+            }
+    
+            function recreateGrid(gifts) {
+                giftsGrid.innerHTML = '';
+                
+                gifts.forEach(gift => {
+                    const giftElement = document.createElement('div');
+                    giftElement.className = `gift-item sin-${gift.sin}`;
+                    
+                    const tierClass = gift.tier === 6 ? 'tier-text tier-ex' : 'tier-text';
+                    const keywordClass = gift.keyword === 'keywordless' ? 'keyword-icon keywordless' : 'keyword-icon';
+                    
+                    giftElement.innerHTML = `
+                        <img class="gift-image" src="${getGiftImagePath(gift.id)}" alt="${gift.name}" 
+                            onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjcyIiBoZWlnaHQ9IjcyIiBmaWxsPSIjMGYxMzFjIi8+CjxwYXRoIGQ9Ik0zNiAxOEMzOC4yMDkxIDE4IDQwIDE5Ljc5MDkgNDAgMjJWNDBINDZDNTAuNDE4MyA0MCA1NCA0My41ODE3IDU0IDQ4QzU0IDUyLjQxODMgNTAuNDE4MyA1NiA0NiA1Nkg0MlY2NEM0MiA2Ni4yMDkxIDQwLjIwOTEgNjggMzggNjhDMzUuNzkwOSA2OCAzNCA2Ni4yMDkxIDM0IDY0VjU2SDMwQzI1LjU4MTcgNTYgMjIgNTIuNDE4MyAyMiA0OEMyMiA0My41ODE3IDI1LjU4MTcgNDAgMzAgNDBIMzhWMjJDMzggMTkuNzkwOSAzNS43OTA5IDE4IDMzIDE4QzMwLjIwOTEgMTggMjggMTkuNzkwOSAyOCAyMlYzNEgyNEMxOS41ODE3IDM0IDE2IDMwLjQxODMgMTYgMjZDMTYgMjEuNTgxNyAxOS41ODE3IDE4IDI0IDE4SDMyVjIyQzMyIDE5Ljc5MDkgMjkuNzkwOSAxOCAyNyAxOEMyNC4yMDkxIDE4IDIyIDE5Lzc5MDkgMjIgMjJWMzRIMThDMTMuNTgxNyAzNCAxMCAzMC40MTgzIDEwIDI2QzEwIDIxLjU4MTcgMTMuNTgxNyAxOCAxOCAxOEgyNlYyMkMyNiAxOS43OTA5IDIzLjc5MDkgMTggMjEgMThaIiBmaWxsPSIjMzAzODQ3Ii8+Cjwvc3ZnPg=='">
+                        <div class="${tierClass}">${tierMapping[gift.tier]}</div>
+                        ${gift.keyword !== 'keywordless' ? 
+                            `<img class="${keywordClass}" src="${getEffectImagePath(gift.keyword)}" alt="${keywordNames[gift.keyword] || gift.keyword}"
+                                onerror="this.src='${createFallbackIcon(gift.keyword)}'">` 
+                            : ''}
+                    `;
+                    
+                    giftElement.addEventListener('click', () => openGiftModal(gift));
+                    giftsGrid.appendChild(giftElement);
+                });
+            }
+    
+            function updateGridDisplay(gifts) {
+                recreateGrid(gifts);
+            }
+    
+            function openFiltersModal() {
+                filtersModal.style.display = 'flex';
+                updateFilterButtons();
+            }
+    
+            function updateFilterButtons() {
+                document.querySelectorAll('.filter-option, .sort-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                
+                document.querySelector(`[data-sin="${currentFilters.sin}"]`)?.classList.add('active');
+                document.querySelector(`[data-keyword="${currentFilters.keyword}"]`)?.classList.add('active');
+                document.querySelector(`[data-sort="${currentFilters.sort}"]`)?.classList.add('active');
+            }
+    
+            function resetAllFilters() {
+                currentFilters = {
+                    sin: 'all',
+                    keyword: 'all',
+                    sort: 'id-asc'
+                };
+                applyFiltersAndSort();
+                updateFilterButtons();
+            }
+    
+            function initializeFilters() {
+                document.querySelectorAll('[data-sin]').forEach(option => {
+                    option.addEventListener('click', () => {
+                        currentFilters.sin = option.dataset.sin;
+                        applyFiltersAndSort();
+                        updateFilterButtons();
+                    });
+                });
+                
+                document.querySelectorAll('[data-keyword]').forEach(option => {
+                    option.addEventListener('click', () => {
+                        currentFilters.keyword = option.dataset.keyword;
+                        applyFiltersAndSort();
+                        updateFilterButtons();
+                    });
+                });
+                
+                document.querySelectorAll('[data-sort]').forEach(option => {
+                    option.addEventListener('click', () => {
+                        currentFilters.sort = option.dataset.sort;
+                        applyFiltersAndSort();
+                        updateFilterButtons();
+                    });
+                });
+                
+                openFiltersBtn.addEventListener('click', openFiltersModal);
+                closeFiltersModal.addEventListener('click', () => {
+                    filtersModal.style.display = 'none';
+                });
+                resetFiltersBtn.addEventListener('click', resetAllFilters);
+                
+                filtersModal.addEventListener('click', (e) => {
+                    if (e.target === filtersModal) {
+                        filtersModal.style.display = 'none';
+                    }
+                });
+                
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && filtersModal.style.display === 'flex') {
+                        filtersModal.style.display = 'none';
+                    }
+                });
+            }
+    
+            function openNavigationModal() {
+                navigationModal.style.display = 'flex';
+                updateNavigationButtons();
+            }
+    
+            function updateNavigationButtons() {
+                document.querySelectorAll('.navigation-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                document.querySelector('[data-page="ego-gifts"]').classList.add('active');
+            }
+    
+            function handlePageSelection(page) {
+                console.log(`Selected page: ${page}`);
+                
+                if (page !== 'ego-gifts') {
+                    alert(`Page "${page}" will be available soon!`);
+                }
+                
+                navigationModal.style.display = 'none';
+            }
+
+            function showEffectTooltip(effectName, event) {
+                const effect = effectsData[effectName];
+                if (!effect) return;
+                
+                const tooltip = document.getElementById('effectTooltip');
+                tooltip.textContent = effect.description;
+                tooltip.className = `effect-tooltip visible ${effect.type}`;
+                
+                const x = event.clientX || event.touches[0].clientX;
+                const y = event.clientY || event.touches[0].clientY;
+                
+                tooltip.style.opacity = '0';
+                tooltip.style.display = 'block';
+                
+                const tooltipRect = tooltip.getBoundingClientRect();
+                const tooltipWidth = tooltipRect.width;
+                const tooltipHeight = tooltipRect.height;
+                
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                
+                const margin = 10;
+                
+                let finalX = x + 10;
+                if (finalX + tooltipWidth + margin > windowWidth) {
+                    finalX = x - tooltipWidth - 10;
+                    if (finalX < margin) {
+                        finalX = margin;
+                    }
+                }
+                
+                let finalY = y + 10;
+                if (finalY + tooltipHeight + margin > windowHeight) {
+                    finalY = y - tooltipHeight - 10;
+                    if (finalY < margin) {
+                        finalY = margin;
+                    }
+                }
+                
+                tooltip.style.left = finalX + 'px';
+                tooltip.style.top = finalY + 'px';
+                tooltip.style.opacity = '1';
+                
+            }
+
+            function hideEffectTooltip() {
+                const tooltip = document.getElementById('effectTooltip');
+                tooltip.classList.remove('visible');
+                tooltip.style.display = 'none';
+            }
+
+            function initializeEffectTooltips() {
+                document.addEventListener('mouseover', function(e) {
+                    if (e.target.classList.contains('keyword-text')) {
+                        showEffectTooltip(e.target.textContent, e);
+                    }
+                });
+                
+                document.addEventListener('mouseout', function(e) {
+                    if (e.target.classList.contains('keyword-text')) {
+                        hideEffectTooltip();
+                    }
+                });
+                
+                document.addEventListener('mouseover', function(e) {
+                    if (e.target.classList.contains('positive-text')) {
+                        showEffectTooltip(e.target.textContent, e);
+                    }
+                });
+                
+                document.addEventListener('mouseout', function(e) {
+                    if (e.target.classList.contains('positive-text')) {
+                        hideEffectTooltip();
+                    }
+                });
+                
+                document.addEventListener('mouseover', function(e) {
+                    if (e.target.classList.contains('neutral-text')) {
+                        showEffectTooltip(e.target.textContent, e);
+                    }
+                });
+                
+                document.addEventListener('mouseout', function(e) {
+                    if (e.target.classList.contains('neutral-text')) {
+                        hideEffectTooltip();
+                    }
+                });
+            }
+
+    
+            function initializeNavigation() {
+                pageTitle.addEventListener('click', openNavigationModal);
+                
+                document.querySelectorAll('.navigation-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        const page = option.dataset.page;
+                        handlePageSelection(page);
+                    });
+                });
+                
+                closeNavigationModal.addEventListener('click', () => {
+                    navigationModal.style.display = 'none';
+                });
+                
+                navigationModal.addEventListener('click', (e) => {
+                    if (e.target === navigationModal) {
+                        navigationModal.style.display = 'none';
+                    }
+                });
+                
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && navigationModal.style.display === 'flex') {
+                        navigationModal.style.display = 'none';
+                    }
+                });
+            }
+    
+            let currentPage = 'home';
+
+            function switchPage(pageId) {
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                const targetPage = document.getElementById(`${pageId}-page`);
+                if (targetPage) {
+                    targetPage.classList.add('active');
+                    currentPage = pageId;
+                }
+                
+                updatePageTitle(pageId);
+                toggleLogoVisibility(pageId);
+            }
+    
+            function toggleLogoVisibility(pageId) {
+                const headerSection = document.querySelector('.header-section');
+                const logo = document.querySelector('.logo');
+                
+                if (pageId === 'home') {
+                    headerSection.classList.remove('no-logo');
+                    logo.classList.remove('hidden');
+                } else {
+                    headerSection.classList.add('no-logo');
+                    logo.classList.add('hidden');
+                }
+            }
+    
+            function updatePageTitle(pageId) {
+                const titleMap = {
+                    'home': 'Home',
+                    'md-events': 'MD Events',
+                    'md-theme-packs': 'MD Theme Packs', 
+                    'ego-gifts': 'E.G.O Gifts',
+                    'ego': 'E.G.O',
+                    'identities': 'Identities'
+                };
+                
+                const titleElement = document.querySelector('.page-title');
+                titleElement.innerHTML = `${titleMap[pageId] || 'Pocket LCB'} 
+                    <svg class="dropdown-caret" width="16" height="16" viewBox="0 0 12 10" fill="none">
+                        <path d="M2 4 L6 8 L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="miter" stroke-linejoin="round"/>
+                    </svg>`;
+            }
+    
+            function handlePageSelection(page) {
+                switchPage(page);
+                navigationModal.style.display = 'none';
+            }
+            
+            function initializeNavigation() {
+                pageTitle.addEventListener('click', openNavigationModal);
+                
+                document.querySelectorAll('.navigation-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        const page = option.dataset.page;
+                        handlePageSelection(page);
+                    });
+                });
+                
+                closeNavigationModal.addEventListener('click', () => {
+                    navigationModal.style.display = 'none';
+                });
+                
+                navigationModal.addEventListener('click', (e) => {
+                    if (e.target === navigationModal) {
+                        navigationModal.style.display = 'none';
+                    }
+                });
+                
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && navigationModal.style.display === 'flex') {
+                        navigationModal.style.display = 'none';
+                    }
+                });
+            }
+    
+            function updateNavigationButtons() {
+                document.querySelectorAll('.navigation-option').forEach(option => {
+                    option.classList.remove('active');
+                    if (option.dataset.page === currentPage) {
+                        option.classList.add('active');
+                    }
+                });
+            }
+            
+            function openNavigationModal() {
+                navigationModal.style.display = 'flex';
+                updateNavigationButtons();
+            }
+    
+            document.addEventListener('DOMContentLoaded', function() {
+                    initializeNavigation();
+                    switchPage('home');
+                    
+                    initializeGrid();
+                });
+            
+                document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('img').forEach(img => {
+                    img.addEventListener('contextmenu', function(e) {
+                        e.preventDefault();
+                        return false;
+                    });
+                });
+                
+                const modalImage = document.getElementById('modalImage');
+                if (modalImage) {
+                    modalImage.addEventListener('contextmenu', function(e) {
+                        e.preventDefault();
+                        return false;
+                    });
+                    
+                    modalImage.setAttribute('draggable', 'false');
+                }
+                
+                document.querySelectorAll('.gift-image').forEach(img => {
+                    img.setAttribute('draggable', 'false');
+                });
+            });
+    
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.keyCode === 67) {
+                    const selection = window.getSelection();
+                    if (selection.toString().length > 0) {
+                        selection.removeAllRanges();
+                    }
+                }
+            });
+        </script>
+        <div class="effect-tooltip" id="effectTooltip"></div>
+    </body>
+</html>
