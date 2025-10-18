@@ -829,12 +829,12 @@
             .event-image {
                 width: 100%;
                 max-width: 280px;
-                height: 160px;
-                object-fit: cover;
+                height: 100%;
                 border-radius: 12px;
                 margin: 0 auto;
                 display: block;
                 border: 1px solid #2a3040;
+                object-fit: contain;
             }
 
             .event-timer {
@@ -896,14 +896,9 @@
                 border-radius: 25px;
                 margin-top: 10px;
             }
-
-            .event-description {
-                color: #b0b0b0;
-                font-size: 0.95rem;
-                line-height: 1.5;
-                margin-top: 15px;
+            .event-na {
+                display: none;
             }
-
             .event-status {
                 position: absolute;
                 top: 15px;
@@ -920,9 +915,8 @@
                 color: white;
             }
 
-            .status-upcoming {
-                background: #16849b;
-                color: white;
+            .status-na {
+                display: none;
             }
 
             .status-ended {
@@ -1837,35 +1831,52 @@
             const eventsData = [
                 {
                     id: 1,
-                    name: "Mirror Dungeon: Season 6",
-                    image: "img/events/md_season6.jpg",
+                    name: "Pilgrimage of Compassion",
+                    image: "img/events/2025/arknights.png",
                     endDate: "2025-10-23T01:00:00",
-                    description: "Description",
                     status: "active"
                 },
                 {
                     id: 2,
-                    name: "Banner 1",
-                    image: "img/events/banner1.jpg",
-                    endDate: "2025-11-15T00:00:00",
-                    description: "Desc",
+                    name: "Daily Check-in",
+                    image: "img/events/2025/dailycheckin.png",
+                    endDate: "2025-10-23T01:00:00",
                     status: "active"
                 },
                 {
                     id: 3,
-                    name: "Season 6 Battle Pass: Zang Hua Ying",
-                    image: "img/events/battlepass.jpg",
-                    endDate: "2025-09-30T23:59:59",
-                    description: "111",
-                    status: "upcoming"
+                    name: "Target Extraction - Pilgrimage of Compassion",
+                    image: "img/events/2025/te-arknights.png",
+                    endDate: "2025-10-23T01:00:00",
+                    status: "active"
                 },
                 {
                     id: 4,
-                    name: "Random",
-                    image: "img/events/random.jpg",
-                    endDate: "2024-08-31T23:59:59",
-                    description: "Hehehe",
-                    status: "ended"
+                    name: "Target Extraction - Shi Assoc. East Section 3 Faust",
+                    image: "img/events/2025/te-shi.png",
+                    endDate: "2025-10-23T01:00:00",
+                    status: "active"
+                },
+                {
+                    id: 5,
+                    name: "Target Extraction - Gregor",
+                    image: "img/events/2025/te-gr1.png",
+                    endDate: "2025-10-23T01:00:00",
+                    status: "active"
+                },
+                {
+                    id: 6,
+                    name: "Line 5: Merry Go Round",
+                    image: "img/events/2025/rr5.png",
+                    endDate: "2025-10-23T01:00:00",
+                    status: "na"
+                },
+                {
+                    id: 7,
+                    name: "Season 6: Zàng Huā Yín",
+                    image: "img/events/2025/s6.png",
+                    endDate: "2025-10-23T01:00:00",
+                    status: "na"
                 }
             ];
 
@@ -1905,7 +1916,6 @@
                             </div>
                         </div>
                     </div>
-                    <p class="event-description">${event.description}</p>
                 `;
                 
                 return eventTab;
