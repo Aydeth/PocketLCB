@@ -780,6 +780,190 @@
                     padding: 10px;
                 }
             }
+            .events-section {
+                margin: 40px 0;
+                text-align: center;
+            }
+
+            .events-title {
+                font-size: 1.5rem;
+                color: #ffffff;
+                margin-bottom: 30px;
+                font-weight: 500;
+            }
+
+            .events-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 25px;
+                margin-bottom: 30px;
+            }
+
+            .event-tab {
+                background: #0f131c;
+                border: 1px solid #2a3040;
+                border-radius: 16px;
+                padding: 25px;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .event-tab:hover {
+                border-color: #fff;
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            }
+
+            .event-header {
+                margin-bottom: 20px;
+            }
+
+            .event-name {
+                font-size: 1.4rem;
+                color: #ffffff;
+                margin-bottom: 15px;
+                font-weight: 500;
+            }
+
+            .event-image {
+                width: 100%;
+                max-width: 280px;
+                height: 160px;
+                object-fit: cover;
+                border-radius: 12px;
+                margin: 0 auto;
+                display: block;
+                border: 1px solid #2a3040;
+            }
+
+            .event-timer {
+                margin-top: 20px;
+            }
+
+            .timer-container {
+                background: #0f131c;
+                border: 1px solid #2a3040;
+                border-radius: 25px;
+                padding: 15px 20px;
+                display: inline-block;
+                margin: 0 auto;
+            }
+
+            .countdown-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 0;
+                flex-wrap: nowrap;
+                white-space: nowrap;
+            }
+
+            .countdown-unit {
+                padding: 4px;
+                min-width: 50px;
+                transition: all 0.3s ease;
+                border: none !important;
+                flex-shrink: 0;
+            }
+
+            .countdown-unit:hover {
+                transform: scale(1.05);
+            }
+
+            .countdown-value {
+                font-size: 1.2rem;
+                font-weight: 500;
+                color: #ffffff;
+                margin-bottom: 2px;
+                font-family: 'SCDream', Arial, sans-serif;
+            }
+
+            .countdown-label {
+                font-size: 0.7rem;
+                color: #b0b0b0;
+                text-transform: none;
+                font-weight: 500;
+            }
+
+            .event-ended {
+                font-size: 1.4rem;
+                color: #ff6b6b;
+                font-weight: 500;
+                padding: 15px;
+                background: #1a1f2b;
+                border: 1px solid #ff6b6b;
+                border-radius: 25px;
+                margin-top: 10px;
+            }
+
+            .event-description {
+                color: #b0b0b0;
+                font-size: 0.95rem;
+                line-height: 1.5;
+                margin-top: 15px;
+            }
+
+            .event-status {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                font-weight: 500;
+                text-transform: uppercase;
+            }
+
+            .status-active {
+                background: #6c9c20;
+                color: white;
+            }
+
+            .status-upcoming {
+                background: #16849b;
+                color: white;
+            }
+
+            .status-ended {
+                background: #c9100f;
+                color: white;
+            }
+            @media (max-width: 480px) {
+                .events-grid {
+                    grid-template-columns: 1fr;
+                    gap: 20px;
+                }
+                
+                .event-tab {
+                    padding: 20px;
+                }
+                
+                .timer-container {
+                    padding: 12px 15px;
+                }
+                
+                .countdown-container {
+                    gap: 6px;
+                }
+                
+                .countdown-unit {
+                    padding: 6px 4px;
+                    min-width: 45px;
+                }
+                
+                .countdown-value {
+                    font-size: 1.1rem;
+                }
+                
+                .countdown-label {
+                    font-size: 0.65rem;
+                }
+                
+                .event-name {
+                    font-size: 1.2rem;
+                }
+            }
         </style>
     </head>
     <body>
@@ -805,7 +989,12 @@
                         Your comprehensive companion for Limbus Company Battle data.
                         <br> Browse E.G.O Gifts, Identities, and more with detailed information and filters.
                     </p>
-                    
+                    <div class="events-section">
+                        <h2 class="events-title">Current Events</h2>
+                        <div class="events-grid" id="eventsGrid">
+                            
+                        </div>
+                    </div>
                     <div class="features-grid">
                         <div class="feature-card">
                             <div class="feature-icon">🎁</div>
@@ -1644,6 +1833,148 @@
                         selection.removeAllRanges();
                     }
                 }
+            });
+            const eventsData = [
+                {
+                    id: 1,
+                    name: "Mirror Dungeon: Season 6",
+                    image: "img/events/md_season6.jpg",
+                    endDate: "2025-10-23T01:00:00",
+                    description: "Description",
+                    status: "active"
+                },
+                {
+                    id: 2,
+                    name: "Banner 1",
+                    image: "img/events/banner1.jpg",
+                    endDate: "2025-11-15T00:00:00",
+                    description: "Desc",
+                    status: "active"
+                },
+                {
+                    id: 3,
+                    name: "Season 6 Battle Pass: Zang Hua Ying",
+                    image: "img/events/battlepass.jpg",
+                    endDate: "2025-09-30T23:59:59",
+                    description: "111",
+                    status: "upcoming"
+                },
+                {
+                    id: 4,
+                    name: "Random",
+                    image: "img/events/random.jpg",
+                    endDate: "2024-08-31T23:59:59",
+                    description: "Hehehe",
+                    status: "ended"
+                }
+            ];
+
+            function createEventTab(event) {
+                const eventTab = document.createElement('div');
+                eventTab.className = 'event-tab';
+                eventTab.setAttribute('data-event-id', event.id);
+                
+                const statusClass = `status-${event.status}`;
+                
+                eventTab.innerHTML = `
+                    <div class="event-header">
+                        <div class="event-status ${statusClass}">${event.status}</div>
+                        <h3 class="event-name">${event.name}</h3>
+                        <img class="event-image" src="${event.image}" alt="${event.name}" 
+                            onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgwIiBoZWlnaHQ9IjE2MCIgdmlld0JveD0iMCAwIDI4MCAxNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyODAiIGhlaWdodD0iMTYwIiBmaWxsPSIjMGYxMzFjIi8+CjxwYXRoIGQ9Ik0xNDAgNjBDMTQ1LjUyMyA2MCAxNTAgNTUuNTIyOCAxNTAgNTBDMTUwIDQ0LjQ3NzIgMTQ1LjUyMyA0MCAxNDAgNDBDMTM0LjQ3NyA0MCAxMzAgNDQuNDc3MiAxMzAgNTBDMTMwIDU1LjUyMjggMTM0LjQ3NyA2MCAxNDAgNjBaIiBmaWxsPSIjMzAzODQ3Ii8+Cjx0ZXh0IHg9IjE0MCIgeT0iOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzMwMzg0NyI+RXZlbnQgSW1hZ2U8L3RleHQ+Cjwvc3ZnPgo='">
+                    </div>
+                    <div class="event-timer" id="timer-${event.id}">
+                        <div class="timer-container">
+                            <div class="countdown-container">
+                                <div class="countdown-unit">
+                                    <div class="countdown-value">00</div>
+                                    <div class="countdown-label">Days</div>
+                                </div>
+                                <div class="countdown-unit">
+                                    <div class="countdown-value">00</div>
+                                    <div class="countdown-label">Hours</div>
+                                </div>
+                                <div class="countdown-unit">
+                                    <div class="countdown-value">00</div>
+                                    <div class="countdown-label">Minutes</div>
+                                </div>
+                                <div class="countdown-unit">
+                                    <div class="countdown-value">00</div>
+                                    <div class="countdown-label">Seconds</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="event-description">${event.description}</p>
+                `;
+                
+                return eventTab;
+            }
+
+            function updateEventTimer(eventId, endDate) {
+                const timerElement = document.getElementById(`timer-${eventId}`);
+                if (!timerElement) return;
+
+                const targetDate = new Date(endDate).getTime();
+                const now = new Date().getTime();
+                const timeLeft = targetDate - now;
+
+                if (timeLeft < 0) {
+                    timerElement.innerHTML = '<div class="event-ended">Event Ended</div>';
+                    const event = eventsData.find(e => e.id === eventId);
+                    if (event) {
+                        event.status = 'ended';
+                        const statusBadge = timerElement.closest('.event-tab').querySelector('.event-status');
+                        if (statusBadge) {
+                            statusBadge.className = 'event-status status-ended';
+                            statusBadge.textContent = 'ended';
+                        }
+                    }
+                    return;
+                }
+
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                const countdownValues = timerElement.querySelectorAll('.countdown-value');
+                if (countdownValues.length === 4) {
+                    countdownValues[0].textContent = days.toString().padStart(2, '0');
+                    countdownValues[1].textContent = hours.toString().padStart(2, '0');
+                    countdownValues[2].textContent = minutes.toString().padStart(2, '0');
+                    countdownValues[3].textContent = seconds.toString().padStart(2, '0');
+                }
+            }
+
+            function initializeEventTabs() {
+                const eventsGrid = document.getElementById('eventsGrid');
+                if (!eventsGrid) return;
+
+                eventsGrid.innerHTML = '';
+                
+                eventsData.forEach(event => {
+                    const eventTab = createEventTab(event);
+                    eventsGrid.appendChild(eventTab);
+                    
+                    updateEventTimer(event.id, event.endDate);
+                });
+            }
+
+            function updateAllTimers() {
+                eventsData.forEach(event => {
+                    updateEventTimer(event.id, event.endDate);
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                initializeEventTabs();
+                
+                setInterval(updateAllTimers, 1000);
+                
+                initializeNavigation();
+                switchPage('home');
+                initializeGrid();
             });
         </script>
         <div class="effect-tooltip" id="effectTooltip"></div>
