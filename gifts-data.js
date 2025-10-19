@@ -9,7 +9,7 @@ const giftsData = [
         price: "198",
         description: `When applying <img class="description-icon" src="${getEffectImagePath('burn')}"> <span class="keyword-text">Burn</span> Potency or 'Unique Burn' to an enemy with <img class="description-icon" src="${getEffectImagePath('burn')}"> <span class="keyword-text">Burn</span> or 'Unique Burn', randomly inflict a total of 3 <img class="description-icon" src="${getEffectImagePath('burn')}"> <span class="keyword-text">Burn</span> Potency between all enemies.<br><br>When activating Wrath Absolute Resonance, randomly inflict a total of 5 <img class="description-icon" src="${getEffectImagePath('burn')}"> <span class="keyword-text">Burn</span> Potency between all enemies at Combat Start.`,
         sin: "wrath",
-        tier: 6,
+        tier: 2,
         keyword: "burn"
     },
     {

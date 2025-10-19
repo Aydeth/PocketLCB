@@ -511,7 +511,7 @@
                 padding: 8px 12px;
                 background: #0f131c;
                 border: 1px solid #2a3040;
-                border-radius: 8px;
+                border-radius: 20px;
                 color: #cccccc;
                 cursor: pointer;
                 text-align: center;
@@ -531,6 +531,10 @@
                 background: white;
                 border-color: white;
                 color: black;
+            }
+            .filter-option:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
             }
             .sort-group {
                 display: flex;
@@ -587,67 +591,6 @@
             .reset-filters:active {
                 background: #f0f0f0 !important;
                 transform: scale(0.98);
-            }
-            /* Кастомный скроллбар */
-            ::-webkit-scrollbar {
-                width: 8px;
-            }
-
-            ::-webkit-scrollbar-track {
-                background: #0f131c;
-                border-radius: 4px;
-            }
-
-            ::-webkit-scrollbar-thumb {
-                background: #2a3040;
-                border-radius: 4px;
-                border: 1px solid #3a4050;
-            }
-
-            ::-webkit-scrollbar-thumb:hover {
-                background: #3a4050;
-                border-color: #4a5060;
-            }
-
-            ::-webkit-scrollbar-thumb:active {
-                background: #16849b;
-                border-color: #1a94ab;
-            }
-
-            /* Для Firefox */
-            * {
-                scrollbar-width: thin;
-                scrollbar-color: #2a3040 #0f131c;
-            }
-
-            /* Для модальных окон с прокруткой */
-            .modal-content {
-                scrollbar-width: thin;
-                scrollbar-color: #2a3040 #0f131c;
-            }
-
-            .modal-content::-webkit-scrollbar {
-                width: 6px;
-            }
-
-            .modal-content::-webkit-scrollbar-track {
-                background: #0f131c;
-                border-radius: 3px;
-                margin: 5px;
-            }
-
-            .modal-content::-webkit-scrollbar-thumb {
-                background: #2a3040;
-                border-radius: 3px;
-                border: 1px solid #3a4050;
-            }
-
-            .modal-content::-webkit-scrollbar-thumb:hover {
-                background: #3a4050;
-            }
-
-            .modal-content::-webkit-scrollbar-thumb:active {
-                background: #16849b;
             }
             .navigation-section {
                 margin-bottom: 25px;
@@ -953,6 +896,34 @@
                     font-size: 1.2rem;
                 }
             }
+            /* Скрыть скроллбар для модальных окон и основного контента */
+            /* Убрать overflow: hidden у body и контейнеров */
+            body {
+                overflow: auto; /* Восстановить прокрутку */
+            }
+            body::-webkit-scrollbar {
+                display: none; /* Chrome, Safari и Opera */
+            }
+
+            .container, .page {
+                overflow: visible; /* Восстановить нормальное поведение */
+            }
+
+            /* Скрыть скроллбар только для модальных окон */
+            .modal-content {
+                scrollbar-width: none; /* Firefox */
+                -ms-overflow-style: none; /* IE и Edge */
+                overflow-y: auto; /* Разрешить прокрутку контента */
+            }
+
+            .modal-content::-webkit-scrollbar {
+                display: none; /* Chrome, Safari и Opera */
+            }
+
+            /* Скрывать скроллбар body только когда открыто модальное окно */
+            body.modal-open {
+                overflow: hidden;
+            }
         </style>
     </head>
     <body>
@@ -1153,6 +1124,7 @@
             </div>
         </div>
 
+        <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
         <script src="effects-data.js"></script>
         <script src="gifts-data.js"></script>
 
@@ -1953,6 +1925,13 @@
                 initializeNavigation();
                 switchPage('home');
                 initializeGrid();
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                // Проверяем, что Telegram WebApp API доступен
+                if (window.Telegram && Telegram.WebApp) {
+                    // Устанавливаем цвет хедера
+                    Telegram.WebApp.setHeaderColor('#0f131c');
+                }
             });
         </script>
         <div class="effect-tooltip" id="effectTooltip"></div>
