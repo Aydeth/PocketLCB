@@ -1364,19 +1364,24 @@
 
                     // Получаем initData из Telegram WebApp
                     let initData = '';
+                    let user = null;
+                    
                     if (window.Telegram && Telegram.WebApp) {
                         initData = Telegram.WebApp.initData;
+                        user = Telegram.WebApp.initDataUnsafe.user;
                     }
 
-                    // Отправляем ID подарка и initData
-                    const telegramData = {
+                    // Создаем сообщение для отправки
+                    const messageData = {
                         type: 'ego_gift',
                         gift_id: giftData.id,
-                        init_data: initData // Добавляем initData для идентификации пользователя
+                        init_data: initData,
+                        user: user
                     };
 
                     if (window.Telegram && Telegram.WebApp) {
-                        Telegram.WebApp.sendData(JSON.stringify(telegramData));
+                        // Пытаемся отправить через WebApp
+                        Telegram.WebApp.sendData(JSON.stringify(messageData));
                         
                         showNotification('Gift sent to Telegram!', 'success');
                         
@@ -1386,7 +1391,7 @@
                         
                     } else {
                         // Для тестирования вне Telegram
-                        console.log('Telegram message data:', telegramData);
+                        console.log('Telegram message data:', messageData);
                         showNotification('Message prepared for Telegram!', 'info');
                     }
                     
