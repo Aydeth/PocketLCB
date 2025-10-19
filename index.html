@@ -924,35 +924,35 @@
             body.modal-open {
                 overflow: hidden;
             }
-            .send-to-telegram-btn {
-    padding: 12px 24px;
-    background: #0088cc;
-    border: none;
-    border-radius: 25px;
-    color: #ffffff;
-    font-family: 'SCDream', Arial, sans-serif;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    margin-top: 15px;
-}
+            .telegram-send-btn {
+                padding: 12px 24px;
+                background: #0088cc;
+                border: none;
+                border-radius: 25px;
+                color: #ffffff;
+                font-family: 'SCDream', Arial, sans-serif;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-weight: 500;
+                margin-top: 15px;
+            }
 
-.send-to-telegram-btn:hover {
-    background: #0077b3;
-    transform: scale(1.05);
-}
+            .telegram-send-btn:hover {
+                background: #0077b3;
+                transform: scale(1.05);
+            }
 
-.send-to-telegram-btn:active {
-    transform: scale(0.98);
-    transition: transform 0.1s ease;
-}
+            .telegram-send-btn:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
 
-.send-to-telegram-btn:disabled {
-    background: #666;
-    cursor: not-allowed;
-    transform: none;
-}
+            .telegram-send-btn:disabled {
+                background: #666;
+                cursor: not-allowed;
+                transform: none;
+            }
         </style>
     </head>
     <body>
@@ -1076,8 +1076,8 @@
                 </div>
 
                 <div style="text-align: center; margin-top: 20px;">
-                    <button class="send-to-telegram-btn" id="sendToTelegram">
-                        Send to Telegram
+                    <button class="telegram-send-btn" id="sendToTelegram" style="display: none;">
+                        📤 Send to Telegram
                     </button>
                 </div>
             </div>
@@ -1159,13 +1159,18 @@
             </div>
         </div>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
         <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
         <script src="effects-data.js"></script>
         <script src="gifts-data.js"></script>
 
         <script>
-            let currentGift = null;
+            let currentGiftData = null;
+
+            function stripHtmlTags(html) {
+                if (!html) return '';
+                return html.replace(/<[^>]*>/g, '');
+            }
+
             function getGiftImagePath(giftId) {
                 return `img/gifts/gift${giftId}.png`;
             }
@@ -1344,39 +1349,111 @@
             }
 
             function openGiftModal(gift) {
-    currentGift = gift; // Сохраняем текущий гифт
-    
-    modalImage.src = getGiftImagePath(gift.id);
-    modalImage.alt = gift.name;
-    modalName.textContent = gift.name;
-    modalPrice.textContent = gift.price;
-    modalDescription.innerHTML = formatDescription(gift.description, gift.keyword);
-    
-    const tierClass = gift.tier === 6 ? 'modal-tier modal-tier-ex' : 'modal-tier';
-    modalTier.className = tierClass;
-    modalTier.textContent = `Tier ${tierMapping[gift.tier]}`;
-    
-    if (gift.keyword === 'keywordless') {
-        keywordAttribute.style.display = 'none';
-    } else {
-        keywordAttribute.style.display = 'flex';
-        modalKeywordIcon.src = getEffectImagePath(gift.keyword);
-        modalKeywordIcon.alt = keywordNames[gift.keyword] || gift.keyword;
-        modalKeywordIcon.onerror = function() {
-            this.src = createFallbackIcon(gift.keyword);
-        };
-        modalKeyword.textContent = keywordNames[gift.keyword] || gift.keyword;
-    }
-    
-    modalSin.textContent = sinNames[gift.sin] || gift.sin;
-    modalSin.style.backgroundColor = sinColors[gift.sin] || '#9f693a';
-    
-    giftModal.style.display = 'flex';
-}
+                currentGiftData = gift; // Сохраняем данные гифта
+                
+                modalImage.src = getGiftImagePath(gift.id);
+                modalImage.alt = gift.name;
+                modalName.textContent = gift.name;
+                modalPrice.textContent = gift.price;
+                modalDescription.innerHTML = formatDescription(gift.description, gift.keyword);
+                
+                const tierClass = gift.tier === 6 ? 'modal-tier modal-tier-ex' : 'modal-tier';
+                modalTier.className = tierClass;
+                modalTier.textContent = `Tier ${tierMapping[gift.tier]}`;
+                
+                if (gift.keyword === 'keywordless') {
+                    keywordAttribute.style.display = 'none';
+                } else {
+                    keywordAttribute.style.display = 'flex';
+                    modalKeywordIcon.src = getEffectImagePath(gift.keyword);
+                    modalKeywordIcon.alt = keywordNames[gift.keyword] || gift.keyword;
+                    modalKeywordIcon.onerror = function() {
+                        this.src = createFallbackIcon(gift.keyword);
+                    };
+                    modalKeyword.textContent = keywordNames[gift.keyword] || gift.keyword;
+                }
+                
+                modalSin.textContent = sinNames[gift.sin] || gift.sin;
+                modalSin.style.backgroundColor = sinColors[gift.sin] || '#9f693a';
+                
+                // Показываем кнопку отправки в Telegram
+                const sendButton = document.getElementById('sendToTelegram');
+                sendButton.style.display = 'block';
+                
+                giftModal.style.display = 'flex';
+            }
+
+            async function sendGiftToTelegram(giftData) {
+                const sendButton = document.getElementById('sendToTelegram');
+                const originalText = sendButton.textContent;
+                
+                try {
+                    sendButton.textContent = 'Sending...';
+                    sendButton.disabled = true;
+
+                    // Очищаем описание от HTML тегов
+                    const cleanDescription = stripHtmlTags(giftData.description);
+                    
+                    // Форматируем сообщение согласно требованиям
+                    const message = `*${giftData.name}*\n_${cleanDescription}_\nTier ${tierMapping[giftData.tier]}\nKeyword: ${keywordNames[giftData.keyword] || giftData.keyword}\nCost: ${giftData.price}`;
+
+                    if (window.Telegram && Telegram.WebApp) {
+                        Telegram.WebApp.sendData(JSON.stringify({
+                            type: 'ego_gift',
+                            gift: giftData,
+                            message: message
+                        }));
+                        
+                        showNotification('Gift sent to Telegram!', 'success');
+                    } else {
+                        console.log('Telegram message:', message);
+                        showNotification('Gift data copied to console!', 'info');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error sending to Telegram:', error);
+                    showNotification('Error sending gift', 'error');
+                } finally {
+                    sendButton.textContent = originalText;
+                    sendButton.disabled = false;
+                }
+            }
+
+            // Функция для показа уведомлений
+            function showNotification(message, type = 'info') {
+                // Создаем временное уведомление
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    z-index: 10000;
+                    font-family: 'SCDream', Arial, sans-serif;
+                    font-weight: 500;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+
     
             function closeGiftModal() {
                 giftModal.style.display = 'none';
                 keywordAttribute.style.display = 'flex';
+                currentGiftData = null;
+                
+                // Скрываем кнопку при закрытии модального окна
+                const sendButton = document.getElementById('sendToTelegram');
+                sendButton.style.display = 'none';
             }
     
             giftModal.addEventListener('click', (e) => {
@@ -1969,79 +2046,14 @@
                     Telegram.WebApp.setBottomBarColor('#0f131c');
                 }
             });
-            // Альтернативная упрощенная версия
-            async function sendGiftToTelegram() {
-                if (!currentGift) return;
-                
-                const sendButton = document.getElementById('sendToTelegram');
-                const originalText = sendButton.textContent;
-                
-                try {
-                    sendButton.textContent = 'Sending...';
-                    sendButton.disabled = true;
-
-                    // Отправляем только данные о гифте
-                    if (window.Telegram && Telegram.WebApp) {
-                        Telegram.WebApp.sendData(JSON.stringify({
-                            action: 'share_gift',
-                            gift_id: currentGift.id,
-                            gift_name: currentGift.name,
-                            gift_tier: currentGift.tier,
-                            gift_sin: currentGift.sin,
-                            gift_price: currentGift.price,
-                            gift_keyword: currentGift.keyword,
-                            gift_description: currentGift.description
-                        }));
-                        
-                        // Закрываем Web App после отправки
-                        setTimeout(() => {
-                            Telegram.WebApp.close();
-                        }, 1000);
-                        
-                    } else {
-                        alert('This feature works only in Telegram');
-                    }
-
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Error: ' + error.message);
-                } finally {
-                    sendButton.textContent = originalText;
-                    sendButton.disabled = false;
-                }
-            }
-
-            // Альтернативная функция для отправки через бота (если есть доступ к Bot API)
-            async function sendToBot(blob, giftName) {
-                // Этот метод требует настройки бота на сервере
-                // Здесь показан пример реализации
-                
-                const formData = new FormData();
-                formData.append('photo', blob, `ego_gift_${giftName}.png`);
-                formData.append('chat_id', Telegram.WebApp.initDataUnsafe.user?.id);
-                
-                try {
-                    const response = await fetch('/api/send-photo', { // Ваш endpoint
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (response.ok) {
-                        alert('Gift sent to Telegram!');
-                    } else {
-                        throw new Error('Failed to send');
-                    }
-                } catch (error) {
-                    console.error('Error sending to bot:', error);
-                    throw error;
-                }
-            }
-
-            // Инициализация кнопки
             document.addEventListener('DOMContentLoaded', function() {
                 const sendButton = document.getElementById('sendToTelegram');
                 if (sendButton) {
-                    sendButton.addEventListener('click', sendGiftToTelegram);
+                    sendButton.addEventListener('click', function() {
+                        if (currentGiftData) {
+                            sendGiftToTelegram(currentGiftData);
+                        }
+                    });
                 }
             });
         </script>
