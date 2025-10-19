@@ -19,6 +19,13 @@
                 font-style: normal;
                 font-display: swap;
             }
+            @font-face {
+                font-family: 'BebasKai';
+                src: url('BebasKai.otf') format('opentype'), url('BebasKai.ttf') format('truetype');
+                font-weight: 500;
+                font-style: normal;
+                font-display: swap;
+            }
             * {
                 margin: 0;
                 padding: 0;
@@ -647,15 +654,15 @@
                 padding: 40px;
             }
             .welcome-title {
-                font-size: 2.5rem;
-                color: #ffffff;
+                font-size: 3rem;
+                color: #bd0000;
                 margin-bottom: 20px;
-                font-weight: 500;
+                font-family: 'BebasKai', Arial, sans-serif;
             }
             .welcome-subtitle,
             .unwelcome-subtitle {
                 font-size: 1.2rem;
-                color: #b0b0b0;
+                color: #bd0000;
                 line-height: 1.6;
             }
             .welcome-subtitle {
@@ -723,7 +730,7 @@
             }
             @media (max-width: 768px) {
                 .welcome-title {
-                    font-size: 2rem;
+                    font-size: 3rem;
                 }
                 .welcome-subtitle,
                 .unwelcome-subtitle {
@@ -793,10 +800,10 @@
                 text-align: center;
             }
             .events-title {
-                font-size: 1.5rem;
+                font-size: 2rem;
                 color: #ffffff;
                 margin-bottom: 30px;
-                font-weight: 500;
+                font-family: 'BebasKai', Arial, sans-serif;
             }
             .events-grid {
                 display: grid;
@@ -945,13 +952,13 @@
         <div class="container">
             <div class="page active" id="home-page">
                 <div class="home-content">
-                    <h1 class="welcome-title">Welcome to Pocket LCB</h1>
+                    <p class="welcome-title">Welcome to Pocket LCB</p>
                     <p class="welcome-subtitle">
                         Your comprehensive companion for Limbus Company Battle data.
                         <br> Browse E.G.O Gifts, Identities, and more with detailed information and filters.
                     </p>
                     <div class="events-section">
-                        <h2 class="events-title">Current Events</h2>
+                        <p class="events-title">Current Events</p>
                         <div class="events-grid" id="eventsGrid">
                             
                         </div>
@@ -961,7 +968,7 @@
 
             <div class="page" id="md-events-page">
                 <div class="home-content">
-                    <h1 class="welcome-title">Mirror Dungeon Events</h1>
+                    <p class="welcome-title">Mirror Dungeon Events</p>
                     <p class="welcome-subtitle">
                         MD Events content will be available soon!
                     </p>
@@ -970,7 +977,7 @@
 
             <div class="page" id="md-theme-packs-page">
                 <div class="home-content">
-                    <h1 class="welcome-title">MD Theme Packs</h1>
+                    <p class="welcome-title">MD Theme Packs</p>
                     <p class="welcome-subtitle">
                         MD Theme Packs content will be available soon!
                     </p>
@@ -979,7 +986,7 @@
 
             <div class="page" id="ego-gifts-page">
                 <div class="house-content">
-                    <h1 class="welcome-title">E.G.O Gifts</h1>
+                    <p class="welcome-title">E.G.O Gifts</p>
                     <p class="unwelcome-subtitle">
                         E.G.O Gift Compendium right in your pocket.
                     </p>
@@ -1005,7 +1012,7 @@
 
             <div class="page" id="ego-page">
                 <div class="home-content">
-                    <h1 class="welcome-title">E.G.O</h1>
+                    <p class="welcome-title">E.G.O</p>
                     <p class="welcome-subtitle">
                         E.G.O content will be available soon!
                     </p>
@@ -1014,7 +1021,7 @@
 
             <div class="page" id="identities-page">
                 <div class="home-content">
-                    <h1 class="welcome-title">Identities</h1>
+                    <p class="welcome-title">Identities</p>
                     <p class="welcome-subtitle">
                         Identities content will be available soon!
                     </p>
