@@ -1362,10 +1362,17 @@
                     sendButton.textContent = 'Sending...';
                     sendButton.disabled = true;
 
-                    // Отправляем только ID подарка
+                    // Получаем initData из Telegram WebApp
+                    let initData = '';
+                    if (window.Telegram && Telegram.WebApp) {
+                        initData = Telegram.WebApp.initData;
+                    }
+
+                    // Отправляем ID подарка и initData
                     const telegramData = {
                         type: 'ego_gift',
-                        gift_id: giftData.id // Отправляем только ID
+                        gift_id: giftData.id,
+                        init_data: initData // Добавляем initData для идентификации пользователя
                     };
 
                     if (window.Telegram && Telegram.WebApp) {
@@ -1379,8 +1386,8 @@
                         
                     } else {
                         // Для тестирования вне Telegram
-                        console.log('Telegram message data (ID only):', telegramData);
-                        showNotification('Message prepared for Telegram! Only ID sent.', 'info');
+                        console.log('Telegram message data:', telegramData);
+                        showNotification('Message prepared for Telegram!', 'info');
                     }
                     
                 } catch (error) {
