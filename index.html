@@ -896,31 +896,23 @@
                     font-size: 1.2rem;
                 }
             }
-            /* Скрыть скроллбар для модальных окон и основного контента */
-            /* Убрать overflow: hidden у body и контейнеров */
             body {
-                overflow: auto; /* Восстановить прокрутку */
+                overflow: auto;
             }
             body::-webkit-scrollbar {
-                display: none; /* Chrome, Safari и Opera */
+                display: none;
             }
-
             .container, .page {
-                overflow: visible; /* Восстановить нормальное поведение */
+                overflow: visible;
             }
-
-            /* Скрыть скроллбар только для модальных окон */
             .modal-content {
-                scrollbar-width: none; /* Firefox */
-                -ms-overflow-style: none; /* IE и Edge */
-                overflow-y: auto; /* Разрешить прокрутку контента */
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                overflow-y: auto;
             }
-
             .modal-content::-webkit-scrollbar {
-                display: none; /* Chrome, Safari и Opera */
+                display: none;
             }
-
-            /* Скрывать скроллбар body только когда открыто модальное окно */
             body.modal-open {
                 overflow: hidden;
             }
@@ -1376,14 +1368,12 @@
                 modalSin.textContent = sinNames[gift.sin] || gift.sin;
                 modalSin.style.backgroundColor = sinColors[gift.sin] || '#9f693a';
                 
-                // Показываем кнопку отправки в Telegram
                 const sendButton = document.getElementById('sendToTelegram');
                 sendButton.style.display = 'block';
                 
                 giftModal.style.display = 'flex';
             }
 
-            // Обновите функцию sendGiftToTelegram
             async function sendGiftToTelegram(giftData) {
                 const sendButton = document.getElementById('sendToTelegram');
                 const originalText = sendButton.textContent;
@@ -1392,10 +1382,8 @@
                     sendButton.textContent = 'Sending...';
                     sendButton.disabled = true;
 
-                    // Очищаем описание от HTML тегов
                     const cleanDescription = stripHtmlTags(giftData.description);
                     
-                    // Подготавливаем данные для отправки
                     const telegramData = {
                         type: 'ego_gift',
                         gift: {
@@ -1410,20 +1398,24 @@
                     };
 
                     if (window.Telegram && Telegram.WebApp) {
-                        // Отправляем данные через Telegram Web App
                         Telegram.WebApp.sendData(JSON.stringify(telegramData));
                         
                         showNotification('Gift sent to Telegram!', 'success');
                         
-                        // Закрываем Web App после отправки
                         setTimeout(() => {
                             Telegram.WebApp.close();
                         }, 1500);
                         
                     } else {
                         // Для тестирования вне Telegram
+                        const imageUrl = `https://raw.githubusercontent.com/Aydeth/PocketLCB/refs/heads/main/img/gifts/gift${giftData.id}.png`;
                         console.log('Telegram message data:', telegramData);
-                        showNotification('Gift data prepared for Telegram! Check console.', 'info');
+                        console.log('Image URL:', imageUrl);
+                        
+                        // Показываем тестовое сообщение с изображением
+                        const testMessage = `*${giftData.name}*\n_${cleanDescription}_\nTier ${tierMapping[giftData.tier]}\nKeyword: ${keywordNames[giftData.keyword] || giftData.keyword}\nCost: ${giftData.price}\nSin: ${giftData.sin.toUpperCase()}\n\nImage: ${imageUrl}`;
+                        alert('Telegram message:\n\n' + testMessage);
+                        showNotification('Message prepared for Telegram! Check console for image URL.', 'info');
                     }
                     
                 } catch (error) {
@@ -1435,7 +1427,6 @@
                 }
             }
 
-            // Функция для очистки HTML тегов
             function stripHtmlTags(html) {
                 if (!html) return '';
                 const tmp = document.createElement('div');
@@ -1443,9 +1434,7 @@
                 return tmp.textContent || tmp.innerText || '';
             }
 
-            // Функция для показа уведомлений
             function showNotification(message, type = 'info') {
-                // Создаем временное уведомление
                 const notification = document.createElement('div');
                 notification.textContent = message;
                 notification.style.cssText = `
@@ -1475,7 +1464,6 @@
                 keywordAttribute.style.display = 'flex';
                 currentGiftData = null;
                 
-                // Скрываем кнопку при закрытии модального окна
                 const sendButton = document.getElementById('sendToTelegram');
                 sendButton.style.display = 'none';
             }
