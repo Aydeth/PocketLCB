@@ -1969,106 +1969,81 @@
                     Telegram.WebApp.setBottomBarColor('#0f131c');
                 }
             });
+            // Альтернативная упрощенная версия
             async function sendGiftToTelegram() {
-    if (!currentGift) return;
-    
-    const sendButton = document.getElementById('sendToTelegram');
-    const originalText = sendButton.textContent;
-    
-    try {
-        sendButton.textContent = 'Creating image...';
-        sendButton.disabled = true;
-
-        // Создаем canvas из модального окна
-        const modalContent = document.querySelector('.modal-content');
-        
-        // Используем html2canvas для создания изображения
-        const canvas = await html2canvas(modalContent, {
-            backgroundColor: '#1a1f2b',
-            scale: 2, // Высокое качество
-            useCORS: true,
-            allowTaint: true,
-            logging: false
-        });
-
-        // Конвертируем canvas в blob
-        const blob = await new Promise(resolve => {
-            canvas.toBlob(resolve, 'image/png', 1.0);
-        });
-
-        sendButton.textContent = 'Sending to Telegram...';
-
-        // Отправляем через Telegram Web App
-        if (window.Telegram && Telegram.WebApp) {
-            const result = await Telegram.WebApp.sendData(JSON.stringify({
-                action: 'share_gift',
-                gift_id: currentGift.id,
-                gift_name: currentGift.name
-            }));
-
-            if (result) {
-                // Альтернативный способ - показать изображение для ручного сохранения
-                const imageUrl = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = `ego_gift_${currentGift.name.replace(/\s+/g, '_')}.png`;
-                link.href = imageUrl;
-                link.click();
+                if (!currentGift) return;
                 
-                alert('Image created! You can now share it manually.');
+                const sendButton = document.getElementById('sendToTelegram');
+                const originalText = sendButton.textContent;
+                
+                try {
+                    sendButton.textContent = 'Sending...';
+                    sendButton.disabled = true;
+
+                    // Отправляем только данные о гифте
+                    if (window.Telegram && Telegram.WebApp) {
+                        Telegram.WebApp.sendData(JSON.stringify({
+                            action: 'share_gift',
+                            gift_id: currentGift.id,
+                            gift_name: currentGift.name,
+                            gift_tier: currentGift.tier,
+                            gift_sin: currentGift.sin,
+                            gift_price: currentGift.price,
+                            gift_keyword: currentGift.keyword,
+                            gift_description: currentGift.description
+                        }));
+                        
+                        // Закрываем Web App после отправки
+                        setTimeout(() => {
+                            Telegram.WebApp.close();
+                        }, 1000);
+                        
+                    } else {
+                        alert('This feature works only in Telegram');
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error: ' + error.message);
+                } finally {
+                    sendButton.textContent = originalText;
+                    sendButton.disabled = false;
+                }
             }
-        } else {
-            // Fallback для браузера - скачивание изображения
-            const imageUrl = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.download = `ego_gift_${currentGift.name.replace(/\s+/g, '_')}.png`;
-            link.href = imageUrl;
-            link.click();
-            
-            alert('Image downloaded! You can now share it manually.');
-        }
 
-    } catch (error) {
-        console.error('Error creating image:', error);
-        alert('Error creating image. Please try again.');
-    } finally {
-        sendButton.textContent = originalText;
-        sendButton.disabled = false;
-    }
-}
+            // Альтернативная функция для отправки через бота (если есть доступ к Bot API)
+            async function sendToBot(blob, giftName) {
+                // Этот метод требует настройки бота на сервере
+                // Здесь показан пример реализации
+                
+                const formData = new FormData();
+                formData.append('photo', blob, `ego_gift_${giftName}.png`);
+                formData.append('chat_id', Telegram.WebApp.initDataUnsafe.user?.id);
+                
+                try {
+                    const response = await fetch('/api/send-photo', { // Ваш endpoint
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        alert('Gift sent to Telegram!');
+                    } else {
+                        throw new Error('Failed to send');
+                    }
+                } catch (error) {
+                    console.error('Error sending to bot:', error);
+                    throw error;
+                }
+            }
 
-// Альтернативная функция для отправки через бота (если есть доступ к Bot API)
-async function sendToBot(blob, giftName) {
-    // Этот метод требует настройки бота на сервере
-    // Здесь показан пример реализации
-    
-    const formData = new FormData();
-    formData.append('photo', blob, `ego_gift_${giftName}.png`);
-    formData.append('chat_id', Telegram.WebApp.initDataUnsafe.user?.id);
-    
-    try {
-        const response = await fetch('/api/send-photo', { // Ваш endpoint
-            method: 'POST',
-            body: formData
-        });
-        
-        if (response.ok) {
-            alert('Gift sent to Telegram!');
-        } else {
-            throw new Error('Failed to send');
-        }
-    } catch (error) {
-        console.error('Error sending to bot:', error);
-        throw error;
-    }
-}
-
-// Инициализация кнопки
-document.addEventListener('DOMContentLoaded', function() {
-    const sendButton = document.getElementById('sendToTelegram');
-    if (sendButton) {
-        sendButton.addEventListener('click', sendGiftToTelegram);
-    }
-});
+            // Инициализация кнопки
+            document.addEventListener('DOMContentLoaded', function() {
+                const sendButton = document.getElementById('sendToTelegram');
+                if (sendButton) {
+                    sendButton.addEventListener('click', sendGiftToTelegram);
+                }
+            });
         </script>
         <div class="effect-tooltip" id="effectTooltip"></div>
     </body>
