@@ -1369,6 +1369,7 @@
                     };
 
                     if (window.Telegram && Telegram.WebApp) {
+                        // Если открыто через Telegram Web App
                         Telegram.WebApp.sendData(JSON.stringify(telegramData));
                         
                         showNotification('Gift sent to Telegram!', 'success');
@@ -1378,9 +1379,17 @@
                         }, 1500);
                         
                     } else {
-                        // Для тестирования вне Telegram
-                        console.log('Telegram message data (ID only):', telegramData);
-                        showNotification('Message prepared for Telegram! Only ID sent.', 'info');
+                        // Если открыто в обычном браузере - отправляем через бота
+                        const botUsername = '@pocketlcbbot'; // Замените на реальный username бота
+                        const messageText = JSON.stringify(telegramData);
+                        
+                        // Создаем ссылку для отправки сообщения боту
+                        const telegramUrl = `https://t.me/${botUsername}?start=${btoa(messageText)}`;
+                        
+                        // Открываем Telegram с предзаполненным сообщением
+                        window.open(telegramUrl, '_blank');
+                        
+                        showNotification('Opening Telegram to send gift...', 'info');
                     }
                     
                 } catch (error) {
