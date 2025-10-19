@@ -27,13 +27,14 @@
                 box-sizing: border-box;
             }
             body {
+                -webkit-tap-highlight-color: transparent;
                 font-family: 'SCDream', Arial, sans-serif;
                 background-color: #1a1f2b;
                 color: #e0e0e0;
                 padding: 20px;
             }
             .container {
-                max-width: 1000px;
+                max-width: 100%;
                 margin: 0 auto;
             }
             .page {
@@ -105,13 +106,35 @@
             .search-container {
                 max-width: 100%;
                 margin: 0 auto 30px;
-                padding: 0 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             .search-row {
                 display: flex;
-                gap: 8px;
                 align-items: center;
+                gap: 8px;
                 margin-bottom: 10px;
+            }
+            @media (min-width: 344px) {
+                .search-row {
+                    width: 304px;
+                }
+            }
+            @media (min-width: 463px) {
+                .search-row {
+                    width: 408px;
+                }
+            }
+            @media (min-width: 567px) {
+                .search-row {
+                    width: 512px;
+                }
+            }
+            @media (min-width: 671px) {
+                .search-row {
+                    width: 616px;
+                }
             }
             .search-input {
                 flex: 1;
@@ -202,7 +225,7 @@
                 display: grid;
                 grid-template-columns: repeat(auto-fill, 96px);
                 justify-content: center;
-                gap: 10px;
+                gap: 8px;
                 margin-bottom: 30px;
             }
             .gift-item {
@@ -219,7 +242,6 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                -webkit-tap-highlight-color: transparent;
                 -webkit-touch-callout: none;
                 -webkit-user-select: none;
                 -moz-user-select: none;
@@ -347,7 +369,6 @@
                 transition: all 0.2s ease;
                 z-index: 1001;
                 font-weight: 500;
-                -webkit-tap-highlight-color: transparent;
                 -webkit-user-select: none;
                 -moz-user-select: none;
                 -ms-user-select: none;
@@ -491,7 +512,6 @@
                 transition: all 0.3s ease;
                 font-size: 0.9rem;
                 font-weight: 500;
-                -webkit-tap-highlight-color: transparent;
                 -webkit-user-select: none;
                 -moz-user-select: none;
                 -ms-user-select: none;
@@ -522,7 +542,6 @@
                 transition: all 0.3s ease;
                 font-size: 0.9rem;
                 font-weight: 500;
-                -webkit-tap-highlight-color: transparent;
                 -webkit-user-select: none;
                 -moz-user-select: none;
                 -ms-user-select: none;
@@ -550,7 +569,6 @@
                 transition: all 0.3s ease;
                 font-weight: 500;
                 margin-top: 10px;
-                -webkit-tap-highlight-color: transparent;
                 -webkit-user-select: none;
                 -moz-user-select: none;
                 -ms-user-select: none;
@@ -583,7 +601,6 @@
                 transition: all 0.3s ease;
                 font-size: 1rem;
                 font-weight: 500;
-                -webkit-tap-highlight-color: transparent;
                 -webkit-user-select: none;
                 -moz-user-select: none;
                 -ms-user-select: none;
@@ -644,7 +661,6 @@
                 border-radius: 12px;
                 border: 1px solid #2a3040;
                 transition: all 0.3s ease;
-                -webkit-tap-highlight-color: transparent;
                 -webkit-user-select: none;
                 -moz-user-select: none;
                 -ms-user-select: none;
@@ -691,9 +707,6 @@
                 pointer-events: none;
             }
             @media (max-width: 768px) {
-                .grid {
-                    gap: 15px;
-                }
                 .welcome-title {
                     font-size: 2rem;
                 }
@@ -706,23 +719,12 @@
                 }
             }
             @media (max-width: 480px) {
-                .grid {
-                    gap: 12px;
-                }
-                .dropdown-caret {
-                    width: 10px;
-                    height: 10px;
-                }
                 .logo {
                     max-width: 260px;
                     margin-bottom: 20px;
                 }
                 .search-options {
                     margin-bottom: 20px;
-                }
-                .checkmark {
-                    width: 16px;
-                    height: 16px;
                 }
                 .filter-group {
                     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -784,21 +786,18 @@
                 margin: 40px 0;
                 text-align: center;
             }
-
             .events-title {
                 font-size: 1.5rem;
                 color: #ffffff;
                 margin-bottom: 30px;
                 font-weight: 500;
             }
-
             .events-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
                 gap: 25px;
                 margin-bottom: 30px;
             }
-
             .event-tab {
                 background: #0f131c;
                 border: 1px solid #2a3040;
@@ -808,24 +807,17 @@
                 position: relative;
                 overflow: hidden;
             }
-
             .event-tab:hover {
                 border-color: #fff;
                 transform: translateY(-5px);
                 box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             }
-
-            .event-header {
-                margin-bottom: 20px;
-            }
-
             .event-name {
                 font-size: 1.4rem;
                 color: #ffffff;
                 margin-bottom: 15px;
                 font-weight: 500;
             }
-
             .event-image {
                 width: 100%;
                 max-width: 280px;
@@ -836,20 +828,13 @@
                 border: 1px solid #2a3040;
                 object-fit: contain;
             }
-
             .event-timer {
                 margin-top: 20px;
             }
-
             .timer-container {
-                background: #0f131c;
-                border: 1px solid #2a3040;
-                border-radius: 25px;
-                padding: 15px 20px;
                 display: inline-block;
                 margin: 0 auto;
             }
-
             .countdown-container {
                 display: flex;
                 justify-content: center;
@@ -858,7 +843,6 @@
                 flex-wrap: nowrap;
                 white-space: nowrap;
             }
-
             .countdown-unit {
                 padding: 4px;
                 min-width: 50px;
@@ -866,11 +850,6 @@
                 border: none !important;
                 flex-shrink: 0;
             }
-
-            .countdown-unit:hover {
-                transform: scale(1.05);
-            }
-
             .countdown-value {
                 font-size: 1.2rem;
                 font-weight: 500;
@@ -878,14 +857,12 @@
                 margin-bottom: 2px;
                 font-family: 'SCDream', Arial, sans-serif;
             }
-
             .countdown-label {
                 font-size: 0.7rem;
                 color: #b0b0b0;
                 text-transform: none;
                 font-weight: 500;
             }
-
             .event-ended {
                 font-size: 1.4rem;
                 color: #ff6b6b;
@@ -896,64 +873,31 @@
                 border-radius: 25px;
                 margin-top: 10px;
             }
-            .event-na {
-                display: none;
-            }
+            .event-na,
             .event-status {
-                position: absolute;
-                top: 15px;
-                right: 15px;
-                padding: 6px 12px;
-                border-radius: 20px;
-                font-size: 0.8rem;
-                font-weight: 500;
-                text-transform: uppercase;
+                display: none !important;
             }
-
-            .status-active {
-                background: #6c9c20;
-                color: white;
-            }
-
-            .status-na {
+            .event-na .event-timer {
                 display: none;
-            }
-
-            .status-ended {
-                background: #c9100f;
-                color: white;
             }
             @media (max-width: 480px) {
                 .events-grid {
                     grid-template-columns: 1fr;
                     gap: 20px;
                 }
-                
-                .event-tab {
-                    padding: 20px;
-                }
-                
-                .timer-container {
-                    padding: 12px 15px;
-                }
-                
                 .countdown-container {
                     gap: 6px;
                 }
-                
                 .countdown-unit {
                     padding: 6px 4px;
                     min-width: 45px;
                 }
-                
                 .countdown-value {
                     font-size: 1.1rem;
                 }
-                
                 .countdown-label {
                     font-size: 0.65rem;
                 }
-                
                 .event-name {
                     font-size: 1.2rem;
                 }
@@ -1051,15 +995,17 @@
                     </p>
                 </div>
                 <div class="search-container">
-                    <div class="search-row">
-                        <input type="text" id="searchInput" placeholder="Search E.G.O Gifts..." class="search-input">
-                        <button class="filter-btn" id="openFilters">Filters</button>
-                    </div>
-                    <div class="search-options">
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="searchInDescription">
-                            <span class="checkmark"></span> Search in description
-                        </label>
+                    <div>
+                        <div class="search-row">
+                            <input type="text" id="searchInput" placeholder="Search E.G.O Gifts..." class="search-input">
+                            <button class="filter-btn" id="openFilters">Filters</button>
+                        </div>
+                        <div class="search-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="searchInDescription">
+                                <span class="checkmark"></span> Search in description
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="grid" id="giftsGrid">
@@ -1868,14 +1814,14 @@
                     id: 6,
                     name: "Line 5: Merry Go Round",
                     image: "img/events/2025/rr5.png",
-                    endDate: "2025-10-23T01:00:00",
+                    endDate: "2025-09-09T00:00:00",
                     status: "na"
                 },
                 {
                     id: 7,
                     name: "Season 6: Zàng Huā Yín",
                     image: "img/events/2025/s6.png",
-                    endDate: "2025-10-23T01:00:00",
+                    endDate: "2025-09-09T00:00:00",
                     status: "na"
                 }
             ];
@@ -1885,15 +1831,17 @@
                 eventTab.className = 'event-tab';
                 eventTab.setAttribute('data-event-id', event.id);
                 
-                const statusClass = `status-${event.status}`;
+                // Убираем отображение статуса для всех событий
+                const statusDisplay = 'none';
                 
                 eventTab.innerHTML = `
                     <div class="event-header">
-                        <div class="event-status ${statusClass}">${event.status}</div>
+                        <div class="event-status" style="display: ${statusDisplay}">${event.status}</div>
                         <h3 class="event-name">${event.name}</h3>
                         <img class="event-image" src="${event.image}" alt="${event.name}" 
                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgwIiBoZWlnaHQ9IjE2MCIgdmlld0JveD0iMCAwIDI4MCAxNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyODAiIGhlaWdodD0iMTYwIiBmaWxsPSIjMGYxMzFjIi8+CjxwYXRoIGQ9Ik0xNDAgNjBDMTQ1LjUyMyA2MCAxNTAgNTUuNTIyOCAxNTAgNTBDMTUwIDQ0LjQ3NzIgMTQ1LjUyMyA0MCAxNDAgNDBDMTM0LjQ3NyA0MCAxMzAgNDQuNDc3MiAxMzAgNTBDMTMwIDU1LjUyMjggMTM0LjQ3NyA2MCAxNDAgNjBaIiBmaWxsPSIjMzAzODQ3Ii8+Cjx0ZXh0IHg9IjE0MCIgeT0iOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzMwMzg0NyI+RXZlbnQgSW1hZ2U8L3RleHQ+Cjwvc3ZnPgo='">
                     </div>
+                    ${event.status !== 'na' ? `
                     <div class="event-timer" id="timer-${event.id}">
                         <div class="timer-container">
                             <div class="countdown-container">
@@ -1916,6 +1864,7 @@
                             </div>
                         </div>
                     </div>
+                    ` : ''}
                 `;
                 
                 return eventTab;
@@ -1928,17 +1877,12 @@
                 const targetDate = new Date(endDate).getTime();
                 const now = new Date().getTime();
                 const timeLeft = targetDate - now;
-
+            
                 if (timeLeft < 0) {
                     timerElement.innerHTML = '<div class="event-ended">Event Ended</div>';
                     const event = eventsData.find(e => e.id === eventId);
                     if (event) {
                         event.status = 'ended';
-                        const statusBadge = timerElement.closest('.event-tab').querySelector('.event-status');
-                        if (statusBadge) {
-                            statusBadge.className = 'event-status status-ended';
-                            statusBadge.textContent = 'ended';
-                        }
                     }
                     return;
                 }
@@ -1967,13 +1911,19 @@
                     const eventTab = createEventTab(event);
                     eventsGrid.appendChild(eventTab);
                     
-                    updateEventTimer(event.id, event.endDate);
+                    // Обновляем таймер только для событий со статусом не 'na'
+                    if (event.status !== 'na') {
+                        updateEventTimer(event.id, event.endDate);
+                    }
                 });
             }
 
             function updateAllTimers() {
                 eventsData.forEach(event => {
-                    updateEventTimer(event.id, event.endDate);
+                    // Обновляем таймер только для событий со статусом не 'na'
+                    if (event.status !== 'na') {
+                        updateEventTimer(event.id, event.endDate);
+                    }
                 });
             }
 
