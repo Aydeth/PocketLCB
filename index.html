@@ -933,7 +933,7 @@
                             
                         </div>
                     </div>
-                    <div class="features-grid">
+                    <!--<div class="features-grid">
                         <div class="feature-card">
                             <div class="feature-icon">🎁</div>
                             <h3 class="feature-title">E.G.O Gifts</h3>
@@ -965,7 +965,7 @@
                                 Discover Mirror Dungeon events and theme packs with rewards information and strategic recommendations.
                             </p>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
 
@@ -1204,6 +1204,43 @@
             const closeNavigationModal = document.getElementById('closeNavigationModal');
             const pageTitle = document.querySelector('.page-title');
             const effectTooltip = document.getElementById('effectTooltip');
+
+            let timezoneOffset = 0;
+
+            // Функция для получения корейского времени и вычисления разницы
+            async function initializeKoreanTime() {
+                try {
+                    const response = await fetch('https://worldtimeapi.org/api/timezone/Asia/Seoul');
+                    const data = await response.json();
+                    
+                    // Получаем корейское время из API
+                    const koreanTime = new Date(data.datetime);
+                    // Получаем локальное время
+                    const localTime = new Date();
+                    
+                    // Вычисляем разницу в миллисекундах
+                    timezoneOffset = koreanTime.getTime() - localTime.getTime();
+                    
+                    console.log('Korean time initialized. Offset:', timezoneOffset, 'ms');
+                    
+                    // Инициализируем события после получения времени
+                    initializeEventTabs();
+                    updateAllTimers();
+                    
+                } catch (error) {
+                    console.error('Failed to fetch Korean time, using local time:', error);
+                    // В случае ошибки используем локальное время
+                    timezoneOffset = 0;
+                    initializeEventTabs();
+                    updateAllTimers();
+                }
+            }
+
+            // Функция для получения текущего корейского времени
+            function getCurrentKoreanTime() {
+                const localTime = new Date();
+                return new Date(localTime.getTime() + timezoneOffset);
+            }
     
             function createCoinIcon() {
                 return `data:image/svg+xml;base64,${btoa(`
@@ -1779,35 +1816,35 @@
                     id: 1,
                     name: "Pilgrimage of Compassion",
                     image: "img/events/2025/arknights.png",
-                    endDate: "2025-10-23T01:00:00",
+                    endDate: "2025-10-23T06:00:00",
                     status: "active"
                 },
                 {
                     id: 2,
                     name: "Daily Check-in",
                     image: "img/events/2025/dailycheckin.png",
-                    endDate: "2025-10-23T01:00:00",
+                    endDate: "2025-10-23T06:00:00",
                     status: "active"
                 },
                 {
                     id: 3,
                     name: "Target Extraction - Pilgrimage of Compassion",
                     image: "img/events/2025/te-arknights.png",
-                    endDate: "2025-10-23T01:00:00",
+                    endDate: "2025-10-23T06:00:00",
                     status: "active"
                 },
                 {
                     id: 4,
                     name: "Target Extraction - Shi Assoc. East Section 3 Faust",
                     image: "img/events/2025/te-shi.png",
-                    endDate: "2025-10-23T01:00:00",
+                    endDate: "2025-10-23T06:00:00",
                     status: "active"
                 },
                 {
                     id: 5,
                     name: "Target Extraction - Gregor",
                     image: "img/events/2025/te-gr1.png",
-                    endDate: "2025-10-23T01:00:00",
+                    endDate: "2025-10-23T06:00:00",
                     status: "active"
                 },
                 {
@@ -1874,10 +1911,12 @@
                 const timerElement = document.getElementById(`timer-${eventId}`);
                 if (!timerElement) return;
 
+                // Используем корейское время для расчетов
+                const koreanTime = getCurrentKoreanTime();
                 const targetDate = new Date(endDate).getTime();
-                const now = new Date().getTime();
+                const now = koreanTime.getTime();
                 const timeLeft = targetDate - now;
-            
+
                 if (timeLeft < 0) {
                     timerElement.innerHTML = '<div class="event-ended">Event Ended</div>';
                     const event = eventsData.find(e => e.id === eventId);
@@ -1920,7 +1959,6 @@
 
             function updateAllTimers() {
                 eventsData.forEach(event => {
-                    // Обновляем таймер только для событий со статусом не 'na'
                     if (event.status !== 'na') {
                         updateEventTimer(event.id, event.endDate);
                     }
@@ -1928,10 +1966,11 @@
             }
 
             document.addEventListener('DOMContentLoaded', function() {
-                initializeEventTabs();
+                // Заменяем старую инициализацию на инициализацию корейского времени
+                initializeKoreanTime();
                 
+                // Остальной код инициализации
                 setInterval(updateAllTimers, 1000);
-                
                 initializeNavigation();
                 switchPage('home');
                 initializeGrid();
