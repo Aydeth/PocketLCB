@@ -1355,55 +1355,70 @@
             }
 
             async function sendGiftToTelegram(giftData) {
-                const sendButton = document.getElementById('sendToTelegram');
-                const originalText = sendButton.textContent;
+    const sendButton = document.getElementById('sendToTelegram');
+    const originalText = sendButton.textContent;
+    
+    try {
+        sendButton.textContent = 'Sending...';
+        sendButton.disabled = true;
+
+        const cleanDescription = stripHtmlTags(giftData.description);
+        
+        const telegramData = {
+            type: 'ego_gift',
+            gift: {
+                id: giftData.id,
+                name: giftData.name,
+                description: cleanDescription,
+                tier: giftData.tier,
+                keyword: giftData.keyword,
+                price: giftData.price,
+                sin: giftData.sin
+            }
+        };
+
+        if (window.Telegram && Telegram.WebApp) {
+            // Попробуем отправить через WebApp (работает с кнопкой бота)
+            try {
+                Telegram.WebApp.sendData(JSON.stringify(telegramData));
+                showNotification('Gift sent to Telegram!', 'success');
                 
-                try {
-                    sendButton.textContent = 'Sending...';
-                    sendButton.disabled = true;
-
-                    const cleanDescription = stripHtmlTags(giftData.description);
-                    
-                    const telegramData = {
-                        type: 'ego_gift',
-                        gift: {
-                            id: giftData.id,
-                            name: giftData.name,
-                            description: cleanDescription,
-                            tier: giftData.tier,
-                            keyword: giftData.keyword,
-                            price: giftData.price,
-                            sin: giftData.sin
-                        }
-                    };
-
-                    if (window.Telegram && Telegram.WebApp) {
-                        Telegram.WebApp.sendData(JSON.stringify(telegramData));
-                        
-                        showNotification('Gift sent to Telegram!', 'success');
-                        
-                        setTimeout(() => {
-                            Telegram.WebApp.close();
-                        }, 1500);
-                        
-                    } else {
-                        const imageUrl = `https://raw.githubusercontent.com/Aydeth/PocketLCB/refs/heads/main/img/gifts/gift${giftData.id}.png`;
-                        console.log('Telegram message data:', telegramData);
-                        console.log('Image URL:', imageUrl);
-                        
-                        const testMessage = `*${giftData.name}*\n_${cleanDescription}_\nTier ${tierMapping[giftData.tier]}\nKeyword: ${keywordNames[giftData.keyword] || giftData.keyword}\nCost: ${giftData.price}\nSin: ${giftData.sin.toUpperCase()}\n\nImage: ${imageUrl}`;
-                        alert('Telegram message:\n\n' + testMessage);
-                        showNotification('Message prepared for Telegram! Check console for image URL.', 'info');
-                    }
-                    
-                } catch (error) {
-                    console.error('Error sending to Telegram:', error);
-                    showNotification('Error sending gift', 'error');
-                } finally {
-                    sendButton.textContent = originalText;
-                    sendButton.disabled = false;
+                setTimeout(() => {
+                    Telegram.WebApp.close();
+                }, 1500);
+            } catch (webAppError) {
+                // Если WebApp.sendData не работает (например, при открытии через Menu Button)
+                // Отправляем данные как текстовое сообщение
+                console.log('WebApp.sendData failed, trying alternative method...');
+                
+                // Альтернативный метод - отправка через текстовое сообщение
+                if (Telegram.WebApp.sendMessage) {
+                    Telegram.WebApp.sendMessage(JSON.stringify(telegramData));
+                } else {
+                    // Если ничего не работает, показываем данные для ручной отправки
+                    const messageText = JSON.stringify(telegramData);
+                    alert('Copy this data and send it to the bot:\n\n' + messageText);
                 }
             }
+        } else {
+            // Для тестирования вне Telegram
+            console.log('Telegram message data:', telegramData);
+            const imageUrl = `https://raw.githubusercontent.com/Aydeth/PocketLCB/refs/heads/main/img/gifts/gift${giftData.id}.png`;
+            console.log('Image URL:', imageUrl);
+            
+            const testMessage = `*${giftData.name}*\n_${cleanDescription}_\nTier ${tierMapping[giftData.tier]}\nKeyword: ${keywordNames[giftData.keyword] || giftData.keyword}\nCost: ${giftData.price}\nSin: ${giftData.sin.toUpperCase()}\n\nImage: ${imageUrl}`;
+            alert('Telegram message:\n\n' + testMessage);
+            showNotification('Message prepared for Telegram!', 'info');
+        }
+        
+    } catch (error) {
+        console.error('Error sending to Telegram:', error);
+        showNotification('Error sending gift', 'error');
+    } finally {
+        sendButton.textContent = originalText;
+        sendButton.disabled = false;
+    }
+}
 
             function stripHtmlTags(html) {
                 if (!html) return '';
