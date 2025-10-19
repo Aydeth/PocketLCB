@@ -1364,29 +1364,32 @@
 
                     // Получаем initData из Telegram WebApp
                     let initData = '';
-                    let user = null;
                     
                     if (window.Telegram && Telegram.WebApp) {
                         initData = Telegram.WebApp.initData;
-                        user = Telegram.WebApp.initDataUnsafe.user;
+                        console.log('InitData available:', initData ? 'Yes' : 'No');
                     }
 
                     // Создаем сообщение для отправки
                     const messageData = {
                         type: 'ego_gift',
                         gift_id: giftData.id,
-                        init_data: initData,
-                        user: user
+                        init_data: initData
                     };
 
+                    console.log('Sending data to bot:', messageData);
+
                     if (window.Telegram && Telegram.WebApp) {
-                        // Пытаемся отправить через WebApp
+                        // Отправляем данные через WebApp
                         Telegram.WebApp.sendData(JSON.stringify(messageData));
                         
                         showNotification('Gift sent to Telegram!', 'success');
                         
+                        // Закрываем WebApp через 1.5 секунды
                         setTimeout(() => {
-                            Telegram.WebApp.close();
+                            if (Telegram.WebApp.close) {
+                                Telegram.WebApp.close();
+                            }
                         }, 1500);
                         
                     } else {
@@ -1397,7 +1400,7 @@
                     
                 } catch (error) {
                     console.error('Error sending to Telegram:', error);
-                    showNotification('Error sending gift', 'error');
+                    showNotification('Error sending gift: ' + error.message, 'error');
                 } finally {
                     sendButton.textContent = originalText;
                     sendButton.disabled = false;
