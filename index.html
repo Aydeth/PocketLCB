@@ -82,7 +82,9 @@
             .header-section.no-logo .title-container {
                 margin-top: 0;
             }
-            .page-title {
+            .page-title,
+            .telegram-send-btn {
+                font-family: 'SCDream', Arial, sans-serif;
                 text-align: center;
                 color: #ffffff;
                 font-size: 1rem;
@@ -96,12 +98,14 @@
                 border: 1px solid #2a3040;
                 border-radius: 25px;
             }
-            .page-title:hover {
+            .page-title:hover,
+            .telegram-send-btn:hover {
                 background: #2a3040;
                 border-color: #fff;
                 transform: scale(1.05);
             }
-            .page-title:active {
+            .page-title:active,
+            .telegram-send-btn:active {
                 transform: scale(0.98);
                 transition: transform 0.1s ease;
             }
@@ -916,30 +920,6 @@
             body.modal-open {
                 overflow: hidden;
             }
-            .telegram-send-btn {
-                padding: 12px 24px;
-                background: #0088cc;
-                border: none;
-                border-radius: 25px;
-                color: #ffffff;
-                font-family: 'SCDream', Arial, sans-serif;
-                font-size: 1rem;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                font-weight: 500;
-                margin-top: 15px;
-            }
-
-            .telegram-send-btn:hover {
-                background: #0077b3;
-                transform: scale(1.05);
-            }
-
-            .telegram-send-btn:active {
-                transform: scale(0.98);
-                transition: transform 0.1s ease;
-            }
-
             .telegram-send-btn:disabled {
                 background: #666;
                 cursor: not-allowed;
@@ -1069,7 +1049,7 @@
 
                 <div style="text-align: center; margin-top: 20px;">
                     <button class="telegram-send-btn" id="sendToTelegram" style="display: none;">
-                        📤 Send to Telegram
+                        Send to Telegram
                     </button>
                 </div>
             </div>
@@ -1341,7 +1321,7 @@
             }
 
             function openGiftModal(gift) {
-                currentGiftData = gift; // Сохраняем данные гифта
+                currentGiftData = gift;
                 
                 modalImage.src = getGiftImagePath(gift.id);
                 modalImage.alt = gift.name;
@@ -1407,12 +1387,10 @@
                         }, 1500);
                         
                     } else {
-                        // Для тестирования вне Telegram
                         const imageUrl = `https://raw.githubusercontent.com/Aydeth/PocketLCB/refs/heads/main/img/gifts/gift${giftData.id}.png`;
                         console.log('Telegram message data:', telegramData);
                         console.log('Image URL:', imageUrl);
                         
-                        // Показываем тестовое сообщение с изображением
                         const testMessage = `*${giftData.name}*\n_${cleanDescription}_\nTier ${tierMapping[giftData.tier]}\nKeyword: ${keywordNames[giftData.keyword] || giftData.keyword}\nCost: ${giftData.price}\nSin: ${giftData.sin.toUpperCase()}\n\nImage: ${imageUrl}`;
                         alert('Telegram message:\n\n' + testMessage);
                         showNotification('Message prepared for Telegram! Check console for image URL.', 'info');
@@ -1927,7 +1905,7 @@
                     id: 5,
                     name: "Target Extraction - Gregor",
                     image: "img/events/2025/te-gr1.png",
-                    endDate: "2025-10-19T03:01:00Z",
+                    endDate: "2025-10-23T01:00:00Z",
                     status: "active"
                 },
                 {
