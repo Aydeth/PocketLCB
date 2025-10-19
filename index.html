@@ -101,6 +101,10 @@
                 border-color: #fff;
                 transform: scale(1.05);
             }
+            .page-title:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
             .search-container {
                 max-width: 100%;
                 margin: 0 auto 30px;
@@ -218,6 +222,10 @@
                 background: #2a3040;
                 border-color: #fff;
                 transform: scale(1.05);
+            }
+            .filter-btn:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
             }
             .grid {
                 display: grid;
@@ -764,15 +772,6 @@
             .effect-tooltip::after {
                 display: none;
             }
-            /*.effect-tooltip.negative {
-                border-bottom: 3px solid #e20000;
-            }
-            .effect-tooltip.positive {
-                border-bottom: 3px solid #fac400;
-            }
-            .effect-tooltip.neutral {
-                border-bottom: 3px solid #9f6a3a;
-            }*/
             @media (max-width: 480px) {
                 .effect-tooltip {
                     max-width: 280px;
@@ -804,11 +803,6 @@
                 transition: all 0.3s ease;
                 position: relative;
                 overflow: hidden;
-            }
-            .event-tab:hover {
-                border-color: #fff;
-                transform: translateY(-5px);
-                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             }
             .event-name {
                 font-size: 1.4rem;
@@ -900,6 +894,34 @@
                     font-size: 1.2rem;
                 }
             }
+            .event-tab.ended {
+                position: relative;
+            }
+
+            .event-tab.ended::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                border-radius: 16px;
+                z-index: 1;
+            }
+
+            .event-ended-overlay {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 1.8rem;
+                color: #ffffff;
+                font-weight: 500;
+                z-index: 2;
+                text-align: center;
+                width: 100%;
+            }
         </style>
     </head>
     <body>
@@ -929,39 +951,6 @@
                         <h2 class="events-title">Current Events</h2>
                         <div class="events-grid" id="eventsGrid">
                             
-                        </div>
-                    </div>
-                    <div class="features-grid">
-                        <div class="feature-card">
-                            <div class="feature-icon">🎁</div>
-                            <h3 class="feature-title">E.G.O Gifts</h3>
-                            <p class="feature-description">
-                                Browse all E.G.O Gifts with detailed information about effects, tiers, prices, and sin affinities. Filter by keyword and sort by price.
-                            </p>
-                        </div>
-
-                        <div class="feature-card">
-                            <div class="feature-icon">👤</div>
-                            <h3 class="feature-title">Identities</h3>
-                            <p class="feature-description">
-                                View all character identities with their skills, stats, and progression paths. Compare different versions of your favorite characters.
-                            </p>
-                        </div>
-
-                        <div class="feature-card">
-                            <div class="feature-icon">⚡</div>
-                            <h3 class="feature-title">E.G.O</h3>
-                            <p class="feature-description">
-                                Explore E.G.O equipment and abilities with comprehensive details on effects, costs, and strategic applications.
-                            </p>
-                        </div>
-
-                        <div class="feature-card">
-                            <div class="feature-icon">🎪</div>
-                            <h3 class="feature-title">MD Events & Packs</h3>
-                            <p class="feature-description">
-                                Discover Mirror Dungeon events and theme packs with rewards information and strategic recommendations.
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -1233,14 +1222,12 @@
                     const giftItems = document.querySelectorAll('.gift-item');
                     
                     giftItems.forEach(item => {
-                        // Получаем ID из атрибута src изображения
                         const giftImage = item.querySelector('.gift-image');
                         if (!giftImage) {
                             item.style.display = 'none';
                             return;
                         }
                         
-                        // Извлекаем ID из пути к изображению
                         const src = giftImage.src;
                         const giftIdMatch = src.match(/gift(\d+)\.png/);
                         
@@ -1805,7 +1792,7 @@
                     id: 5,
                     name: "Target Extraction - Gregor",
                     image: "img/events/2025/te-gr1.png",
-                    endDate: "2025-10-19T03:01:00Z",
+                    endDate: "2025-10-19T03:33:00Z",
                     status: "active"
                 },
                 {
@@ -1827,9 +1814,11 @@
             function createEventTab(event) {
                 const eventTab = document.createElement('div');
                 eventTab.className = 'event-tab';
+                if (event.status === 'ended') {
+                    eventTab.classList.add('ended');
+                }
                 eventTab.setAttribute('data-event-id', event.id);
                 
-                // Убираем отображение статуса для всех событий
                 const statusDisplay = 'none';
                 
                 eventTab.innerHTML = `
@@ -1839,7 +1828,8 @@
                         <img class="event-image" src="${event.image}" alt="${event.name}" 
                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgwIiBoZWlnaHQ9IjE2MCIgdmlld0JveD0iMCAwIDI4MCAxNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyODAiIGhlaWdodD0iMTYwIiBmaWxsPSIjMGYxMzFjIi8+CjxwYXRoIGQ9Ik0xNDAgNjBDMTQ1LjUyMyA2MCAxNTAgNTUuNTIyOCAxNTAgNTBDMTUwIDQ0LjQ3NzIgMTQ1LjUyMyA0MCAxNDAgNDBDMTM0LjQ3NyA0MCAxMzAgNDQuNDc3MiAxMzAgNTBDMTMwIDU1LjUyMjggMTM0LjQ3NyA2MCAxNDAgNjBaIiBmaWxsPSIjMzAzODQ3Ii8+Cjx0ZXh0IHg9IjE0MCIgeT0iOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzMwMzg0NyI+RXZlbnQgSW1hZ2U8L3RleHQ+Cjwvc3ZnPgo='">
                     </div>
-                    ${event.status !== 'na' ? `
+                    ${event.status === 'ended' ? '<div class="event-ended-overlay">Event Ended</div>' : ''}
+                    ${event.status === 'active' ? `
                     <div class="event-timer" id="timer-${event.id}">
                         <div class="timer-container">
                             <div class="countdown-container">
@@ -1875,12 +1865,24 @@
                 const targetDate = new Date(endDate).getTime();
                 const now = new Date().getTime();
                 const timeLeft = targetDate - now;
-            
+
                 if (timeLeft < 0) {
-                    timerElement.innerHTML = '<div class="event-ended">Event Ended</div>';
-                    const event = eventsData.find(e => e.id === eventId);
-                    if (event) {
-                        event.status = 'ended';
+                    const eventTab = document.querySelector(`[data-event-id="${eventId}"]`);
+                    if (eventTab) {
+                        eventTab.classList.add('ended');
+                        const event = eventsData.find(e => e.id === eventId);
+                        if (event) {
+                            event.status = 'ended';
+                        }
+                        
+                        // Удаляем таймер и добавляем оверлей
+                        timerElement.remove();
+                        if (!eventTab.querySelector('.event-ended-overlay')) {
+                            const overlay = document.createElement('div');
+                            overlay.className = 'event-ended-overlay';
+                            overlay.textContent = 'Event Ended';
+                            eventTab.appendChild(overlay);
+                        }
                     }
                     return;
                 }
@@ -1909,7 +1911,6 @@
                     const eventTab = createEventTab(event);
                     eventsGrid.appendChild(eventTab);
                     
-                    // Обновляем таймер только для событий со статусом не 'na'
                     if (event.status !== 'na') {
                         updateEventTimer(event.id, event.endDate);
                     }
@@ -1918,13 +1919,11 @@
 
             function updateAllTimers() {
                 eventsData.forEach(event => {
-                    // Обновляем таймер только для событий со статусом не 'na'
                     if (event.status !== 'na') {
                         updateEventTimer(event.id, event.endDate);
                     }
                 });
             }
-
             document.addEventListener('DOMContentLoaded', function() {
                 initializeEventTabs();
                 
