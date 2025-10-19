@@ -1383,6 +1383,7 @@
                 giftModal.style.display = 'flex';
             }
 
+            // Обновите функцию sendGiftToTelegram
             async function sendGiftToTelegram(giftData) {
                 const sendButton = document.getElementById('sendToTelegram');
                 const originalText = sendButton.textContent;
@@ -1394,20 +1395,35 @@
                     // Очищаем описание от HTML тегов
                     const cleanDescription = stripHtmlTags(giftData.description);
                     
-                    // Форматируем сообщение согласно требованиям
-                    const message = `*${giftData.name}*\n_${cleanDescription}_\nTier ${tierMapping[giftData.tier]}\nKeyword: ${keywordNames[giftData.keyword] || giftData.keyword}\nCost: ${giftData.price}`;
+                    // Подготавливаем данные для отправки
+                    const telegramData = {
+                        type: 'ego_gift',
+                        gift: {
+                            id: giftData.id,
+                            name: giftData.name,
+                            description: cleanDescription,
+                            tier: giftData.tier,
+                            keyword: giftData.keyword,
+                            price: giftData.price,
+                            sin: giftData.sin
+                        }
+                    };
 
                     if (window.Telegram && Telegram.WebApp) {
-                        Telegram.WebApp.sendData(JSON.stringify({
-                            type: 'ego_gift',
-                            gift: giftData,
-                            message: message
-                        }));
+                        // Отправляем данные через Telegram Web App
+                        Telegram.WebApp.sendData(JSON.stringify(telegramData));
                         
                         showNotification('Gift sent to Telegram!', 'success');
+                        
+                        // Закрываем Web App после отправки
+                        setTimeout(() => {
+                            Telegram.WebApp.close();
+                        }, 1500);
+                        
                     } else {
-                        console.log('Telegram message:', message);
-                        showNotification('Gift data copied to console!', 'info');
+                        // Для тестирования вне Telegram
+                        console.log('Telegram message data:', telegramData);
+                        showNotification('Gift data prepared for Telegram! Check console.', 'info');
                     }
                     
                 } catch (error) {
@@ -1417,6 +1433,14 @@
                     sendButton.textContent = originalText;
                     sendButton.disabled = false;
                 }
+            }
+
+            // Функция для очистки HTML тегов
+            function stripHtmlTags(html) {
+                if (!html) return '';
+                const tmp = document.createElement('div');
+                tmp.innerHTML = html;
+                return tmp.textContent || tmp.innerText || '';
             }
 
             // Функция для показа уведомлений
