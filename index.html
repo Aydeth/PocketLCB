@@ -1362,63 +1362,112 @@
                     sendButton.textContent = 'Sending...';
                     sendButton.disabled = true;
 
-                    // Получаем данные пользователя из Telegram WebApp
+                    // Получаем данные из Telegram WebApp
                     let userData = null;
                     let initData = '';
                     
                     if (window.Telegram && Telegram.WebApp) {
                         userData = Telegram.WebApp.initDataUnsafe.user;
                         initData = Telegram.WebApp.initData;
-                        console.log('User data from Telegram:', userData);
-                        console.log('Init data from Telegram:', initData);
+                        console.log('User data:', userData);
                     }
 
-                    // Подготавливаем данные для отправки
-                    const messageData = {
-                        type: 'ego_gift',
-                        gift_id: giftData.id,
-                        user_data: userData,  // Данные пользователя
-                        init_data: initData,  // Raw initData для валидации
-                        timestamp: Date.now() // Метка времени
-                    };
-
-                    console.log('Sending data to bot:', messageData);
-
-                    if (window.Telegram && Telegram.WebApp) {
-                        // Отправляем данные через Telegram WebApp
-                        Telegram.WebApp.sendData(JSON.stringify(messageData));
-                        
-                        showNotification('✅ Gift sent! Returning to Telegram...', 'success');
-                        
-                        // Даем время на отправку и закрываем приложение
-                        setTimeout(() => {
-                            if (Telegram.WebApp && Telegram.WebApp.close) {
-                                Telegram.WebApp.close();
-                            }
-                        }, 1500);
-                        
+                    // Если есть данные пользователя, отправляем через Bot API
+                    if (userData && userData.id) {
+                        await sendViaBotAPI(giftData, userData);
                     } else {
-                        // Если не в Telegram environment
-                        console.log('Not in Telegram environment, data:', messageData);
-                        showNotification('📱 Please open this in Telegram to send gifts', 'info');
+                        // Если нет данных пользователя, используем стандартный метод
+                        await sendViaWebApp(giftData, userData, initData);
                     }
                     
                 } catch (error) {
-                    console.error('Error sending gift to Telegram:', error);
-                    showNotification('❌ Error sending gift: ' + error.message, 'error');
+                    console.error('Error sending gift:', error);
+                    showNotification('❌ Error: ' + error.message, 'error');
                 } finally {
                     sendButton.textContent = originalText;
                     sendButton.disabled = false;
                 }
             }
 
-            function stripHtmlTags(html) {
-                if (!html) return '';
-                const tmp = document.createElement('div');
-                tmp.innerHTML = html;
-                return tmp.textContent || tmp.innerText || '';
+            // Функция отправки через Bot API (работает всегда)
+            async function sendViaBotAPI(giftData, userData) {
+                const BOT_TOKEN = '8242832780:AAHRvQdV6QM4BeBsx-8swsQ0feJRsYMpbBo';
+                const messageData = {
+                    type: 'ego_gift',
+                    gift_id: giftData.id,
+                    user_data: userData,
+                    source: 'bot_api'
+                };
+
+                try {
+                    // Отправляем сообщение боту через прямые методы API
+                    const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            chat_id: userData.id, // Отправляем самому себе
+                            text: `🎁 E.G.O Gift Shared\n\nGift ID: ${giftData.id}\nPlease wait while I process your gift...`,
+                            parse_mode: 'HTML'
+                        })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (response.ok && result.ok) {
+                        showNotification('✅ Gift sent successfully!', 'success');
+                        
+                        // Также отправляем данные через WebApp для обработки ботом
+                        if (window.Telegram && Telegram.WebApp) {
+                            Telegram.WebApp.sendData(JSON.stringify(messageData));
+                        }
+                        
+                        // Закрываем приложение через 2 секунды
+                        setTimeout(() => {
+                            if (window.Telegram && Telegram.WebApp && Telegram.WebApp.close) {
+                                Telegram.WebApp.close();
+                            }
+                        }, 2000);
+                    } else {
+                        throw new Error(result.description || 'Failed to send via Bot API');
+                    }
+                    
+                } catch (error) {
+                    console.error('Bot API error:', error);
+                    // Fallback на стандартный метод
+                    await sendViaWebApp(giftData, userData, '');
+                }
             }
 
+            // Стандартная функция отправки через WebApp
+            async function sendViaWebApp(giftData, userData, initData) {
+                const messageData = {
+                    type: 'ego_gift',
+                    gift_id: giftData.id,
+                    user_data: userData,
+                    init_data: initData,
+                    source: 'webapp'
+                };
+
+                console.log('Sending via WebApp:', messageData);
+
+                if (window.Telegram && Telegram.WebApp) {
+                    Telegram.WebApp.sendData(JSON.stringify(messageData));
+                    
+                    showNotification('✅ Gift sent! Returning to Telegram...', 'success');
+                    
+                    setTimeout(() => {
+                        if (Telegram.WebApp && Telegram.WebApp.close) {
+                            Telegram.WebApp.close();
+                        }
+                    }, 1500);
+                } else {
+                    showNotification('📱 Please open in Telegram app', 'info');
+                }
+            }
+
+            // Функция показа уведомлений
             function showNotification(message, type = 'info') {
                 const notification = document.createElement('div');
                 notification.textContent = message;
@@ -1434,15 +1483,25 @@
                     font-family: 'SCDream', Arial, sans-serif;
                     font-weight: 500;
                     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    max-width: 300px;
+                    word-wrap: break-word;
                 `;
                 
                 document.body.appendChild(notification);
                 
                 setTimeout(() => {
-                    notification.remove();
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
                 }, 3000);
             }
 
+            function stripHtmlTags(html) {
+                if (!html) return '';
+                const tmp = document.createElement('div');
+                tmp.innerHTML = html;
+                return tmp.textContent || tmp.innerText || '';
+            }
     
             function closeGiftModal() {
                 giftModal.style.display = 'none';
