@@ -1362,114 +1362,41 @@
                     sendButton.textContent = 'Sending...';
                     sendButton.disabled = true;
 
-                    // Всегда получаем данные пользователя из Telegram
-                    let userData = null;
+                    // Отправляем только ID подарка
+                    const telegramData = {
+                        type: 'ego_gift',
+                        gift_id: giftData.id // Отправляем только ID
+                    };
+
                     if (window.Telegram && Telegram.WebApp) {
-                        userData = Telegram.WebApp.initDataUnsafe.user;
-                        console.log('User data:', userData);
+                        Telegram.WebApp.sendData(JSON.stringify(telegramData));
+                        
+                        showNotification('Gift sent to Telegram!', 'success');
+                        
+                        setTimeout(() => {
+                            Telegram.WebApp.close();
+                        }, 1500);
+                        
+                    } else {
+                        // Для тестирования вне Telegram
+                        console.log('Telegram message data (ID only):', telegramData);
+                        showNotification('Message prepared for Telegram! Only ID sent.', 'info');
                     }
-
-                    if (!userData || !userData.id) {
-                        throw new Error('Cannot get user information from Telegram');
-                    }
-
-                    // ОТПРАВЛЯЕМ ДАННЫЕ НАПРЯМУЮ ЧЕРЕЗ BOT API
-                    await sendGiftViaBotAPI(giftData, userData);
                     
                 } catch (error) {
-                    console.error('Error sending gift:', error);
-                    showNotification('❌ Error: ' + error.message, 'error');
+                    console.error('Error sending to Telegram:', error);
+                    showNotification('Error sending gift', 'error');
                 } finally {
                     sendButton.textContent = originalText;
                     sendButton.disabled = false;
                 }
             }
 
-            async function sendGiftViaBotAPI(giftData, userData) {
-                const BOT_TOKEN = '8242832780:AAHRvQdV6QM4BeBsx-8swsQ0feJRsYMpbBo';
-                
-                // Подготавливаем ВСЕ данные о подарке для отправки
-                const fullGiftData = {
-                    type: 'ego_gift_direct',
-                    gift_id: giftData.id,
-                    gift_name: giftData.name,
-                    gift_price: giftData.price,
-                    gift_description: giftData.description,
-                    gift_sin: giftData.sin,
-                    gift_tier: giftData.tier,
-                    gift_keyword: giftData.keyword,
-                    user_id: userData.id,
-                    user_first_name: userData.first_name,
-                    user_username: userData.username,
-                    timestamp: Date.now()
-                };
-
-                console.log('Sending full gift data:', fullGiftData);
-
-                try {
-                    // Отправляем сообщение с ВСЕМИ данными о подарке
-                    const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            chat_id: userData.id, // Отправляем самому пользователю
-                            text: generateGiftMessage(fullGiftData),
-                            parse_mode: 'HTML'
-                        })
-                    });
-
-                    const result = await response.json();
-                    
-                    if (response.ok && result.ok) {
-                        showNotification('✅ Gift sent successfully!', 'success');
-                        
-                        // Закрываем Mini App
-                        setTimeout(() => {
-                            if (window.Telegram && Telegram.WebApp && Telegram.WebApp.close) {
-                                Telegram.WebApp.close();
-                            }
-                        }, 2000);
-                    } else {
-                        throw new Error(result.description || 'Failed to send gift');
-                    }
-                    
-                } catch (error) {
-                    console.error('Bot API send error:', error);
-                    throw error;
-                }
-            }
-
-            // Генерируем сообщение о подарке на стороне JavaScript
-            function generateGiftMessage(giftData) {
-                const tierMapping = {1: "I", 2: "II", 3: "III", 4: "IV", 5: "V", 6: "EX"};
-                const sinMapping = {
-                    'wrath': 'Wrath', 'lust': 'Lust', 'sloth': 'Sloth', 
-                    'gluttony': 'Gluttony', 'gloom': 'Gloom', 'pride': 'Pride', 
-                    'envy': 'Envy', 'none': 'None'
-                };
-                
-                const formattedTier = tierMapping[giftData.gift_tier] || String(giftData.gift_tier);
-                const formattedSin = sinMapping[giftData.gift_sin] || giftData.gift_sin.capitalize();
-                const formattedKeyword = giftData.gift_keyword === 'keywordless' ? 'Keywordless' : giftData.gift_keyword.capitalize();
-                
-                // Очищаем HTML теги из описания
-                const cleanDescription = giftData.gift_description.replace(/<[^>]*>/g, '').replace(/<br\s*\/?>/g, '\n');
-                
-                return `🎁 <b>${escapeHtml(giftData.gift_name)}</b>\n\n${escapeHtml(cleanDescription)}\n\nTier ${formattedTier} • ${formattedSin} • ${formattedKeyword} • Cost: ${giftData.gift_price}`;
-            }
-
-            // Вспомогательная функция для экранирования HTML
-            function escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-
-            // Вспомогательная функция для capitalize
-            String.prototype.capitalize = function() {
-                return this.charAt(0).toUpperCase() + this.slice(1);
+            function stripHtmlTags(html) {
+                if (!html) return '';
+                const tmp = document.createElement('div');
+                tmp.innerHTML = html;
+                return tmp.textContent || tmp.innerText || '';
             }
 
             function showNotification(message, type = 'info') {
@@ -1487,25 +1414,15 @@
                     font-family: 'SCDream', Arial, sans-serif;
                     font-weight: 500;
                     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                    max-width: 300px;
-                    word-wrap: break-word;
                 `;
                 
                 document.body.appendChild(notification);
                 
                 setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
+                    notification.remove();
                 }, 3000);
             }
 
-            function stripHtmlTags(html) {
-                if (!html) return '';
-                const tmp = document.createElement('div');
-                tmp.innerHTML = html;
-                return tmp.textContent || tmp.innerText || '';
-            }
     
             function closeGiftModal() {
                 giftModal.style.display = 'none';
