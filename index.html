@@ -1362,23 +1362,16 @@
                     sendButton.textContent = 'Sending...';
                     sendButton.disabled = true;
 
-                    // Отправляем только ID подарка
                     const telegramData = {
                         type: 'ego_gift',
-                        gift_id: giftData.id // Отправляем только ID
+                        gift_id: giftData.id
                     };
 
                     if (window.Telegram && Telegram.WebApp) {
                         Telegram.WebApp.sendData(JSON.stringify(telegramData));
                         
                         showNotification('Gift sent to Telegram!', 'success');
-                        
-                        setTimeout(() => {
-                            Telegram.WebApp.close();
-                        }, 1500);
-                        
                     } else {
-                        // Для тестирования вне Telegram
                         console.log('Telegram message data (ID only):', telegramData);
                         showNotification('Message prepared for Telegram! Only ID sent.', 'info');
                     }
