@@ -1362,39 +1362,50 @@
                     sendButton.textContent = 'Sending...';
                     sendButton.disabled = true;
 
-                    // Отправляем только ID подарка
-                    const telegramData = {
+                    // Получаем данные пользователя из Telegram WebApp
+                    let userData = null;
+                    let initData = '';
+                    
+                    if (window.Telegram && Telegram.WebApp) {
+                        userData = Telegram.WebApp.initDataUnsafe.user;
+                        initData = Telegram.WebApp.initData;
+                        console.log('User data from Telegram:', userData);
+                        console.log('Init data from Telegram:', initData);
+                    }
+
+                    // Подготавливаем данные для отправки
+                    const messageData = {
                         type: 'ego_gift',
-                        gift_id: giftData.id // Отправляем только ID
+                        gift_id: giftData.id,
+                        user_data: userData,  // Данные пользователя
+                        init_data: initData,  // Raw initData для валидации
+                        timestamp: Date.now() // Метка времени
                     };
 
+                    console.log('Sending data to bot:', messageData);
+
                     if (window.Telegram && Telegram.WebApp) {
-                        // Если открыто через Telegram Web App
-                        Telegram.WebApp.sendData(JSON.stringify(telegramData));
+                        // Отправляем данные через Telegram WebApp
+                        Telegram.WebApp.sendData(JSON.stringify(messageData));
                         
-                        showNotification('Gift sent to Telegram!', 'success');
+                        showNotification('✅ Gift sent! Returning to Telegram...', 'success');
                         
+                        // Даем время на отправку и закрываем приложение
                         setTimeout(() => {
-                            Telegram.WebApp.close();
+                            if (Telegram.WebApp && Telegram.WebApp.close) {
+                                Telegram.WebApp.close();
+                            }
                         }, 1500);
                         
                     } else {
-                        // Если открыто в обычном браузере - отправляем через бота
-                        const botUsername = '@pocketlcbbot'; // Замените на реальный username бота
-                        const messageText = JSON.stringify(telegramData);
-                        
-                        // Создаем ссылку для отправки сообщения боту
-                        const telegramUrl = `https://t.me/${botUsername}?start=${btoa(messageText)}`;
-                        
-                        // Открываем Telegram с предзаполненным сообщением
-                        window.open(telegramUrl, '_blank');
-                        
-                        showNotification('Opening Telegram to send gift...', 'info');
+                        // Если не в Telegram environment
+                        console.log('Not in Telegram environment, data:', messageData);
+                        showNotification('📱 Please open this in Telegram to send gifts', 'info');
                     }
                     
                 } catch (error) {
-                    console.error('Error sending to Telegram:', error);
-                    showNotification('Error sending gift', 'error');
+                    console.error('Error sending gift to Telegram:', error);
+                    showNotification('❌ Error sending gift: ' + error.message, 'error');
                 } finally {
                     sendButton.textContent = originalText;
                     sendButton.disabled = false;
