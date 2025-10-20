@@ -1362,22 +1362,54 @@
                     sendButton.textContent = 'Sending...';
                     sendButton.disabled = true;
 
-                    // Всегда получаем данные пользователя из Telegram
                     let userData = null;
                     if (window.Telegram && Telegram.WebApp) {
                         userData = Telegram.WebApp.initDataUnsafe.user;
-                        console.log('User data:', userData);
                     }
 
                     if (!userData || !userData.id) {
-                        throw new Error('Cannot get user information from Telegram');
+                        throw new Error('Cannot get user information');
                     }
 
-                    // ОТПРАВЛЯЕМ ДАННЫЕ НАПРЯМУЮ ЧЕРЕЗ BOT API
-                    await sendGiftViaBotAPI(giftData, userData);
+                    // Вариант 1: Пытаемся отправить через WebApp (работает если открыто через бота)
+                    if (window.Telegram && Telegram.WebApp) {
+                        const webAppData = {
+                            type: 'ego_gift',
+                            gift_id: giftData.id,
+                            user_data: userData
+                        };
+                        
+                        Telegram.WebApp.sendData(JSON.stringify(webAppData));
+                    }
+
+                    // Вариант 2: Всегда отправляем через Bot API как запасной вариант
+                    const botApiData = {
+                        type: 'ego_gift_direct',
+                        gift_id: giftData.id,
+                        user_id: userData.id,
+                        timestamp: Date.now()
+                    };
+
+                    await fetch(`https://api.telegram.org/bot8242832780:AAHRvQdV6QM4BeBsx-8swsQ0feJRsYMpbBo/sendMessage`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            chat_id: userData.id,
+                            text: `🎁 Gift ID: ${giftData.id}\nPlease wait for processing...`,
+                            parse_mode: 'HTML'
+                        })
+                    });
+
+                    showNotification('✅ Gift sent!', 'success');
+                    
+                    setTimeout(() => {
+                        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.close) {
+                            Telegram.WebApp.close();
+                        }
+                    }, 1500);
                     
                 } catch (error) {
-                    console.error('Error sending gift:', error);
+                    console.error('Error:', error);
                     showNotification('❌ Error: ' + error.message, 'error');
                 } finally {
                     sendButton.textContent = originalText;
