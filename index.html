@@ -56,7 +56,7 @@
             .header-section {
                 background-color: #101010;
                 margin: -20px -20px 20px -20px;
-                padding-top: 40px;
+                padding: 40px 20px 0 20px;
                 border-bottom: 1px solid #282828;
                 transition: all 0.3s ease;
                 position: relative;
@@ -65,23 +65,15 @@
             .header-section.no-logo {
                 padding-top: 20px;
             }
-            .logo-line {
-                background-color: #810000;
-            }
             .logo {
-                padding: 20px;
                 display: block;
                 margin: 0 auto 36px;
-                max-width: 300px;
+                max-width: 280px;
                 height: auto;
                 transition: all 0.3s ease;
                 opacity: 1;
                 transform: translateY(0);
             }
-            img.logo {
-                -webkit-filter: drop-shadow(0 0 4px #000);
-                filter: drop-shadow(0 0 4px #000);
-                }
             .logo.hidden {
                 opacity: 0;
                 transform: translateY(-20px);
@@ -938,9 +930,8 @@
     <body>
         <div class="container">
             <div class="header-section">
-                <div class="logo-line">
-                    <img src="img/menu/logo2.png" alt="Pocket LCB Logo" class="logo" onerror="this.style.display='none'">
-                </div>
+                <img src="img/menu/logo.png" alt="Pocket LCB Logo" class="logo" onerror="this.style.display='none'">
+
                 <div class="title-container">
                     <div class="page-title">
                         E.G.O Gifts
