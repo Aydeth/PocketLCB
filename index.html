@@ -938,7 +938,7 @@
     overflow-y: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    scroll-behavior: smooth;
+    scroll-behavior: smooth; /* Это должно быть уже */
     padding-bottom: 2px;
 }
 .nav-tabs::-webkit-scrollbar {
@@ -1814,29 +1814,34 @@
             }
             
             function initializeNavigation() {
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            const page = tab.dataset.page;
-            switchPage(page);
-        });
-    });
-    
-    document.querySelectorAll('.section-button').forEach(button => {
-        button.addEventListener('click', () => {
-            const page = button.dataset.page;
-            switchPage(page);
-        });
-    });
-    
-    // Добавь колесико мыши для горизонтального скролла
-    const navTabs = document.querySelector('.nav-tabs');
-    if (navTabs) {
-        navTabs.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            navTabs.scrollLeft += e.deltaY;
-        });
-    }
-}
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const page = tab.dataset.page;
+                        switchPage(page);
+                    });
+                });
+                
+                document.querySelectorAll('.section-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const page = button.dataset.page;
+                        switchPage(page);
+                    });
+                });
+                const navTabs = document.querySelector('.nav-tabs');
+                if (navTabs) {
+                    navTabs.addEventListener('wheel', (e) => {
+                        e.preventDefault();
+                        const originalBehavior = navTabs.style.scrollBehavior;
+                        navTabs.style.scrollBehavior = 'auto';
+                        
+                        navTabs.scrollLeft += e.deltaY * 1.5;
+                        
+                        setTimeout(() => {
+                            navTabs.style.scrollBehavior = originalBehavior || 'smooth';
+                        }, 50);
+                    });
+                }
+            }
     
             document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('img').forEach(img => {
