@@ -14,16 +14,30 @@
                 font-display: swap;
             }
             @font-face {
-                font-family: 'ExcelsiorSans';
-                src: url('ExcelsiorSans.ttf') format('truetype');
+                font-family: 'BebasKai';
+                src: url('BebasKai.otf') format('opentype'), url('BebasKai.ttf') format('truetype');
                 font-weight: 500;
                 font-style: normal;
                 font-display: swap;
             }
             @font-face {
-                font-family: 'BebasKai';
-                src: url('BebasKai.otf') format('opentype'), url('BebasKai.ttf') format('truetype');
+                font-family: 'Inter';
+                src: url('Inter.ttf') format('truetype');
                 font-weight: 500;
+                font-style: normal;
+                font-display: swap;
+            }
+            @font-face {
+                font-family: 'Inter';
+                src: url('Inter Medium.ttf') format('truetype');
+                font-weight: 600;
+                font-style: normal;
+                font-display: swap;
+            }
+            @font-face {
+                font-family: 'Inter';
+                src: url('Inter Semibold.ttf') format('truetype');
+                font-weight: 700;
                 font-style: normal;
                 font-display: swap;
             }
@@ -612,7 +626,6 @@
                 color: black;
                 transform: scale(1.02);
             }
-            .home-content,
             .house-content {
                 text-align: center;
             }
@@ -765,10 +778,11 @@
                 text-align: center;
             }
             .events-title {
-                font-size: 2rem;
+                font-size: 1.4rem;
                 color: #ffffff;
-                margin-bottom: 30px;
-                font-family: 'BebasKai', Arial, sans-serif;
+                margin-bottom: 20px;
+                font-family: 'Inter', Arial, sans-serif;
+                font-weight: 600;
             }
             .events-grid {
                 display: grid;
@@ -987,7 +1001,6 @@
             }
             .teaser-section {
                 margin: 40px 0;
-                text-align: center;
             }
             .teaser-block {
                 width: 100%;
@@ -1041,6 +1054,7 @@
                     <p class="welcome-subtitle">
                         SinnerSync is your comprehensive companion for Limbus Company, right here, in Telegram.
                     </p>
+                    <hr>
                     <div class="teaser-section">
                         <p class="events-title">Active Teaser</p>
                         <div class="teaser-block">
