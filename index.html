@@ -82,42 +82,6 @@
                 height: 0;
                 max-height: 0;
             }
-            .title-container {
-                text-align: center;
-                width: 100%;
-                transition: all 0.3s ease;
-                margin-bottom: 10px;
-            }
-            .header-section.no-logo .title-container {
-                margin-top: 0;
-            }
-            .page-title,
-            .telegram-send-btn {
-                font-family: 'SCDream', Arial, sans-serif;
-                text-align: center;
-                color: #ffffff;
-                font-size: 1rem;
-                font-weight: 500;
-                padding: 12px 24px;
-                background: #000;
-                display: inline-block;
-                margin: 0 auto 20px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                border: 1px solid #282828;
-                border-radius: 8px;
-            }
-            .page-title:hover,
-            .telegram-send-btn:hover {
-                background: #282828;
-                border-color: #fff;
-                transform: scale(1.05);
-            }
-            .page-title:active,
-            .telegram-send-btn:active {
-                transform: scale(0.98);
-                transition: transform 0.1s ease;
-            }
             .search-container {
                 max-width: 100%;
                 margin: 0 auto 30px;
@@ -927,49 +891,45 @@
                 cursor: not-allowed;
                 transform: none;
             }
-            /* Новая навигационная панель */
-            /* Новая навигационная панель */
-.nav-tabs {
-    display: flex;
-    width: 100%;
-    margin-top: 10px;
-    border-bottom: 1px solid #282828;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    scroll-behavior: smooth; /* Это должно быть уже */
-    padding-bottom: 2px;
-}
-.nav-tabs::-webkit-scrollbar {
-    display: none;
-}
-.nav-tab {
-    flex: 0 0 auto;
-    text-align: center;
-    padding: 12px 20px;
-    font-family: 'SCDream', Arial, sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #e0e0e0;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    white-space: nowrap;
-}
+            .nav-tabs {
+                display: flex;
+                width: 100%;
+                overflow-x: auto;
+                overflow-y: hidden;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                scroll-behavior: smooth;
+                padding-bottom: 1px;
+            }
+            .nav-tabs::-webkit-scrollbar {
+                display: none;
+            }
+            .nav-tab {
+                flex: 0 0 auto;
+                text-align: center;
+                padding: 12px 20px;
+                font-family: 'SCDream', Arial, sans-serif;
+                font-size: 0.9rem;
+                font-weight: 500;
+                color: #e0e0e0;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                position: relative;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                white-space: nowrap;
+            }
             .nav-tab::after {
                 content: '';
                 position: absolute;
                 bottom: -1px;
                 left: 0;
                 width: 100%;
-                height: 2px;
+                height: 1px;
                 background-color: transparent;
                 transition: all 0.3s ease;
             }
@@ -983,7 +943,6 @@
             .nav-tab.active::after {
                 background-color: #ffffff;
             }
-            /* Стили для страниц с кнопками */
             .section-buttons {
                 display: flex;
                 flex-direction: column;
@@ -1022,11 +981,6 @@
     <body>
         <div class="container">
             <div class="header-section">
-                <div class="title-container">
-                    <div class="page-title">
-                        SinnerSync
-                    </div>
-                </div>
                 <div class="nav-tabs">
                     <button class="nav-tab active" data-page="home">Home</button>
                     <button class="nav-tab" data-page="identities-ego">Identities & E.G.O</button>
@@ -1776,24 +1730,7 @@
                     currentPage = pageId;
                 }
                 
-                updatePageTitle(pageId);
                 updateNavTabs(pageId);
-            }
-    
-            function updatePageTitle(pageId) {
-                const titleMap = {
-                    'home': 'Home',
-                    'identities-ego': 'Identities & E.G.O',
-                    'mirror-dungeon': 'Mirror Dungeon',
-                    'md-events': 'MD Events',
-                    'md-theme-packs': 'MD Theme Packs', 
-                    'ego-gifts': 'E.G.O Gifts',
-                    'ego': 'E.G.O',
-                    'identities': 'Identities'
-                };
-                
-                const titleElement = document.querySelector('.page-title');
-                titleElement.textContent = titleMap[pageId] || 'SinnerSync';
             }
             
             function updateNavTabs(pageId) {
