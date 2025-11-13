@@ -86,6 +86,7 @@
                 text-align: center;
                 width: 100%;
                 transition: all 0.3s ease;
+                margin-bottom: 10px;
             }
             .header-section.no-logo .title-container {
                 margin-top: 0;
@@ -926,6 +927,101 @@
                 cursor: not-allowed;
                 transform: none;
             }
+            /* Новая навигационная панель */
+            .nav-tabs {
+    display: flex;
+    width: 100%;
+    margin-top: 10px;
+    border-bottom: 1px solid #282828;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: grab;
+    padding-bottom: 2px;
+}
+.nav-tabs::-webkit-scrollbar {
+    display: none;
+}
+.nav-tabs:active {
+    cursor: grabbing;
+}
+.nav-tab {
+    flex: 0 0 auto;
+    text-align: center;
+    padding: 12px 16px;
+    font-family: 'SCDream', Arial, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #e0e0e0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+}
+.nav-tabs.grabbing {
+    cursor: grabbing;
+    user-select: none;
+}
+            .nav-tab::after {
+                content: '';
+                position: absolute;
+                bottom: -1px;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background-color: transparent;
+                transition: all 0.3s ease;
+            }
+            .nav-tab:hover {
+                color: #ffffff;
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+            .nav-tab.active {
+                color: #ffffff;
+            }
+            .nav-tab.active::after {
+                background-color: #ffffff;
+            }
+            /* Стили для страниц с кнопками */
+            .section-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                max-width: 400px;
+                margin: 30px auto;
+            }
+            .section-button {
+                padding: 15px 20px;
+                background: #101010;
+                border: 1px solid #282828;
+                border-radius: 8px;
+                color: #e0e0e0;
+                font-family: 'SCDream', Arial, sans-serif;
+                font-size: 1rem;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-align: center;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            .section-button:hover {
+                background: #282828;
+                border-color: #fff;
+                transform: translateY(-2px);
+            }
+            .section-button:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
         </style>
     </head>
     <body>
@@ -933,11 +1029,13 @@
             <div class="header-section">
                 <div class="title-container">
                     <div class="page-title">
-                        E.G.O Gifts
-                        <svg class="dropdown-caret" width="16" height="16" viewBox="0 0 12 10" fill="none">
-                            <path d="M2 4 L6 8 L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="miter" stroke-linejoin="round" />
-                        </svg>
+                        SinnerSync
                     </div>
+                </div>
+                <div class="nav-tabs">
+                    <button class="nav-tab active" data-page="home">Home</button>
+                    <button class="nav-tab" data-page="identities-ego">Identities & E.G.O</button>
+                    <button class="nav-tab" data-page="mirror-dungeon">Mirror Dungeon</button>
                 </div>
             </div>
         </div>
@@ -948,12 +1046,38 @@
                     <p class="welcome-subtitle">
                         SinnerSync is your comprehensive companion for Limbus Company, right here, in Telegram.
                     </p>
-                    <iframe width="100%" src="https://www.youtube.com/embed/oLAloJK-rsA" title="[Limbus Company - PV] 제7회 발푸르기스의 밤 / 第7回 ヴァルプルギスの夜 / The 7th Walpurgis Night" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     <div class="events-section">
                         <p class="events-title">Current Events</p>
                         <div class="events-grid" id="eventsGrid">
                             
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page" id="identities-ego-page">
+                <div class="home-content">
+                    <p class="welcome-title">Identities & E.G.O</p>
+                    <p class="welcome-subtitle">
+                        Select a category to explore
+                    </p>
+                    <div class="section-buttons">
+                        <button class="section-button" data-page="identities">Identities</button>
+                        <button class="section-button" data-page="ego">E.G.O</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page" id="mirror-dungeon-page">
+                <div class="home-content">
+                    <p class="welcome-title">Mirror Dungeon</p>
+                    <p class="welcome-subtitle">
+                        Select a category to explore
+                    </p>
+                    <div class="section-buttons">
+                        <button class="section-button" data-page="md-events">Events</button>
+                        <button class="section-button" data-page="md-theme-packs">Theme Packs</button>
+                        <button class="section-button" data-page="ego-gifts">E.G.O Gifts</button>
                     </div>
                 </div>
             </div>
@@ -1106,29 +1230,6 @@
                 <button class="reset-filters" id="resetFilters">Reset All Filters</button>
             </div>
         </div>
-        <div class="modal" id="navigationModal">
-            <div class="modal-content filters-modal-content">
-                <button class="close-btn" id="closeNavigationModal">&times;</button>
-                <h2 class="filters-title">Navigation</h2>
-
-                <div class="navigation-section">
-                    <div class="navigation-group">
-                        <div class="navigation-option" data-page="home">Home</div>
-                    </div>
-                    <h3 class="filters-title">Identities & E.G.O</h3>
-                    <div class="navigation-group">
-                        <div class="navigation-option" data-page="identities">Identities</div>
-                        <div class="navigation-option" data-page="ego">E.G.O</div>
-                    </div>
-                    <h3 class="filters-title">Mirror Dungeon</h3>
-                    <div class="navigation-group">
-                        <div class="navigation-option" data-page="md-events">Events</div>
-                        <div class="navigation-option" data-page="md-theme-packs">Theme Packs</div>
-                        <div class="navigation-option active" data-page="ego-gifts">E.G.O Gifts</div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
         <script src="data/effects.js"></script>
@@ -1209,9 +1310,6 @@
             const keywordAttribute = document.getElementById('keywordAttribute');
             const priceAttribute = document.getElementById('priceAttribute');
             const openFiltersBtn = document.getElementById('openFilters');
-            const navigationModal = document.getElementById('navigationModal');
-            const closeNavigationModal = document.getElementById('closeNavigationModal');
-            const pageTitle = document.querySelector('.page-title');
             const effectTooltip = document.getElementById('effectTooltip');
     
             function createCoinIcon() {
@@ -1313,7 +1411,6 @@
                 
                 setupSearch();
                 initializeFilters();
-                initializeNavigation();
                 initializeEffectTooltips();
                 
                 applyFiltersAndSort();
@@ -1496,7 +1593,7 @@
                     
                     giftElement.innerHTML = `
                         <img class="gift-image" src="${getGiftImagePath(gift.id)}" alt="${gift.name}" 
-                            onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjcyIiBoZWlnaHQ9IjcyIiBmaWxsPSIjMGYxMzFjIi8+CjxwYXRoIGQ9Ik0zNiAxOEMzOC4yMDkxIDE4IDQwIDE5Ljc5MDkgNDAgMjJWNDBINDZDNTAuNDE4MyA0MCA1NCA0My41ODE3IDU0IDQ4QzU0IDUyLjQxODMgNTAuNDE4MyA1NiA0NiA1Nkg0MlY2NEM0MiA2Ni4yMDkxIDQwLjIwOTEgNjggMzggNjhDMzUuNzkwOSA2OCAzNCA2Ni4yMDkxIDM0IDY0VjU2SDMwQzI1LjU4MTcgNTYgMjIgNTIuNDE4MyAyMiA0OEMyMiA0My41ODE3IDI1LjU4MTcgNDAgMzAgNDBIMzhWMjJDMzggMTkuNzkwOSAzNS43OTA5IDE4IDMzIDE4QzMwLjIwOTEgMTggMjggMTkuNzkwOSAyOCAyMlYzNEgyNEMxOS41ODE3IDM0IDE2IDMwLjQxODMgMTYgMjZDMTYgMjEuNTgxNyAxOS41ODE3IDE4IDI0IDE4SDMyVjIyQzMyIDE5Ljc5MDkgMjkuNzkwOSAxOCAyNyAxOEMyNC4yMDkxIDE4IDIyIDE5Lzc5MDkgMjIgMjJWMzRIMThDMTMuNTgxNyAzNCAxMCAzMC40MTgzIDEwIDI2QzEwIDIxLjU4MTcgMTMuNTgxNyAxOCAxOCAxOEgyNlYyMkMyNiAxOS43OTA5IDIzLjc5MDkgMTggMjEgMThaIiBmaWxsPSIjMzAzODQ3Ii8+Cjwvc3ZnPg=='">
+                            onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjcyIiBoZWlnaHQ9IjcyIiBmaWxsPSIjMGYxMzFjIi8+CjxwYXRoIGQ9Ik0zNiAxOEMzOC4yMDkxIDE4IDQwIDE5Ljc5MDkgNDAgMjJWNDBINDZDNTAuNDE4MyA0MCA1NCA0My41ODE3IDU0IDQ4QzU0IDUyLjQxODMgNTAuNDE4MyA1NiA0NiA1Nkg0MlY2NEM0MiA2Ni4yMDkxIDQwLjIwOTEgNjggMzggNjhDMzUuNzkwOSA2OCAzNCA2Ni4yMDkxIDM0IDY0VjU2SDMwQzI1LjU4MTcgNTYgMjIgNTIuNDE4MyAyMiA0OEMyMiA0My41ODE3IDI1LjU4MTcgNDAgMzAgNDBIMzhWMjJDMzggMTkuNzkwOSAzNS43OTA5IDE4IDMzIDE4QzMwLjIwOTEgMTggMjggMTkuNzkwOSAyOCAyMlYzNEgyNEMxOS41ODE3IDM0IDE2IDMwLjQxODMgMTYgMjZDMTYgMjEuNTgxNyAxOS41ODE3IDE4IDI0IDE4SDMyVjIyQzMyIDE5Ljc5MDkgMjkuNzkwOSAxOCAyNyAxOEMyNC4yMDkxIDE4IDIyIDE5Ljc5MDkgMjIgMjJWMzRIMThDMTMuNTgxNyAzNCAxMCAzMC40MTgzIDEwIDI2QzEwIDIxLjU4MTcgMTMuNTgxNyAxOCAxOCAxOEgyNlYyMkMyNiAxOS43OTA5IDIzLjc5MDkgMTggMjEgMThaIiBmaWxsPSIjMzAzODQ3Ii8+Cjwvc3ZnPg=='">
                         <div class="${tierClass}">${tierMapping[gift.tier]}</div>
                         ${gift.keyword !== 'keywordless' ? 
                             `<img class="${keywordClass}" src="${getEffectImagePath(gift.keyword)}" alt="${keywordNames[gift.keyword] || gift.keyword}"
@@ -1582,28 +1679,6 @@
                 });
             }
     
-            function openNavigationModal() {
-                navigationModal.style.display = 'flex';
-                updateNavigationButtons();
-            }
-    
-            function updateNavigationButtons() {
-                document.querySelectorAll('.navigation-option').forEach(option => {
-                    option.classList.remove('active');
-                });
-                document.querySelector('[data-page="ego-gifts"]').classList.add('active');
-            }
-    
-            function handlePageSelection(page) {
-                console.log(`Selected page: ${page}`);
-                
-                if (page !== 'ego-gifts') {
-                    alert(`Page "${page}" will be available soon!`);
-                }
-                
-                navigationModal.style.display = 'none';
-            }
-
             function showEffectTooltip(effectName, event) {
                 const effect = effectsData[effectName];
                 if (!effect) return;
@@ -1693,34 +1768,6 @@
                 });
             }
 
-    
-            function initializeNavigation() {
-                pageTitle.addEventListener('click', openNavigationModal);
-                
-                document.querySelectorAll('.navigation-option').forEach(option => {
-                    option.addEventListener('click', () => {
-                        const page = option.dataset.page;
-                        handlePageSelection(page);
-                    });
-                });
-                
-                closeNavigationModal.addEventListener('click', () => {
-                    navigationModal.style.display = 'none';
-                });
-                
-                navigationModal.addEventListener('click', (e) => {
-                    if (e.target === navigationModal) {
-                        navigationModal.style.display = 'none';
-                    }
-                });
-                
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && navigationModal.style.display === 'flex') {
-                        navigationModal.style.display = 'none';
-                    }
-                });
-            }
-    
             let currentPage = 'home';
 
             function switchPage(pageId) {
@@ -1735,17 +1782,14 @@
                 }
                 
                 updatePageTitle(pageId);
-                toggleLogoVisibility(pageId);
-            }
-    
-            function toggleLogoVisibility(pageId) {
-                const headerSection = document.querySelector('.header-section');
-                const logo = document.querySelector('.logo');
+                updateNavTabs(pageId);
             }
     
             function updatePageTitle(pageId) {
                 const titleMap = {
                     'home': 'Home',
+                    'identities-ego': 'Identities & E.G.O',
+                    'mirror-dungeon': 'Mirror Dungeon',
                     'md-events': 'MD Events',
                     'md-theme-packs': 'MD Theme Packs', 
                     'ego-gifts': 'E.G.O Gifts',
@@ -1754,66 +1798,93 @@
                 };
                 
                 const titleElement = document.querySelector('.page-title');
-                titleElement.innerHTML = `${titleMap[pageId] || 'Pocket LCB'} 
-                    <svg class="dropdown-caret" width="16" height="16" viewBox="0 0 12 10" fill="none">
-                        <path d="M2 4 L6 8 L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="miter" stroke-linejoin="round"/>
-                    </svg>`;
+                titleElement.textContent = titleMap[pageId] || 'SinnerSync';
             }
-    
-            function handlePageSelection(page) {
-                switchPage(page);
-                navigationModal.style.display = 'none';
+            
+            function updateNavTabs(pageId) {
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                let activeTab = 'home';
+                if (pageId === 'identities' || pageId === 'ego') {
+                    activeTab = 'identities-ego';
+                } else if (pageId === 'md-events' || pageId === 'md-theme-packs' || pageId === 'ego-gifts') {
+                    activeTab = 'mirror-dungeon';
+                } else {
+                    activeTab = pageId;
+                }
+                
+                document.querySelector(`.nav-tab[data-page="${activeTab}"]`).classList.add('active');
             }
             
             function initializeNavigation() {
-                pageTitle.addEventListener('click', openNavigationModal);
-                
-                document.querySelectorAll('.navigation-option').forEach(option => {
-                    option.addEventListener('click', () => {
-                        const page = option.dataset.page;
-                        handlePageSelection(page);
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const page = tab.dataset.page;
+                        switchPage(page);
                     });
                 });
                 
-                closeNavigationModal.addEventListener('click', () => {
-                    navigationModal.style.display = 'none';
-                });
-                
-                navigationModal.addEventListener('click', (e) => {
-                    if (e.target === navigationModal) {
-                        navigationModal.style.display = 'none';
-                    }
-                });
-                
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && navigationModal.style.display === 'flex') {
-                        navigationModal.style.display = 'none';
-                    }
+                document.querySelectorAll('.section-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const page = button.dataset.page;
+                        switchPage(page);
+                    });
                 });
             }
-    
-            function updateNavigationButtons() {
-                document.querySelectorAll('.navigation-option').forEach(option => {
-                    option.classList.remove('active');
-                    if (option.dataset.page === currentPage) {
-                        option.classList.add('active');
-                    }
-                });
-            }
-            
-            function openNavigationModal() {
-                navigationModal.style.display = 'flex';
-                updateNavigationButtons();
-            }
+
+            function initializeNavScroll() {
+    const navTabs = document.querySelector('.nav-tabs');
+    let isDragging = false;
+    let startX;
+    let scrollLeft;
+
+    navTabs.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        navTabs.classList.add('grabbing');
+        startX = e.pageX - navTabs.offsetLeft;
+        scrollLeft = navTabs.scrollLeft;
+    });
+
+    navTabs.addEventListener('mouseleave', () => {
+        isDragging = false;
+        navTabs.classList.remove('grabbing');
+    });
+
+    navTabs.addEventListener('mouseup', () => {
+        isDragging = false;
+        navTabs.classList.remove('grabbing');
+    });
+
+    navTabs.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - navTabs.offsetLeft;
+        const walk = (x - startX) * 2;
+        navTabs.scrollLeft = scrollLeft - walk;
+    });
+
+    // Touch events for mobile
+    navTabs.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        startX = e.touches[0].pageX - navTabs.offsetLeft;
+        scrollLeft = navTabs.scrollLeft;
+    });
+
+    navTabs.addEventListener('touchend', () => {
+        isDragging = false;
+    });
+
+    navTabs.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const x = e.touches[0].pageX - navTabs.offsetLeft;
+        const walk = (x - startX) * 2;
+        navTabs.scrollLeft = scrollLeft - walk;
+    });
+}
     
             document.addEventListener('DOMContentLoaded', function() {
-                    initializeNavigation();
-                    switchPage('home');
-                    
-                    initializeGrid();
-                });
-            
-                document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('img').forEach(img => {
                     img.addEventListener('contextmenu', function(e) {
                         e.preventDefault();
@@ -1998,6 +2069,7 @@
                 
                 setInterval(updateAllTimers, 1000);
                 
+                initializeNavScroll();
                 initializeNavigation();
                 switchPage('home');
                 initializeGrid();
