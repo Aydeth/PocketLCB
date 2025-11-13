@@ -3,11 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Pocket LCB</title>
+        <title>SinnerSync</title>
+        <link rel="icon" type="image/x-icon" href="img/menu/favicon.ico">
         <style>
             @font-face {
                 font-family: 'SCDream';
-                src: url('SCDream5.woff') format('woff'), url('SCDream5.otf') format('opentype');
+                src: url('SCDream5.otf') format('opentype');
                 font-weight: 500;
                 font-style: normal;
                 font-display: swap;
@@ -56,7 +57,7 @@
             .header-section {
                 background-color: #101010;
                 margin: -20px -20px 20px -20px;
-                padding: 40px 20px 0 20px;
+                padding: 20px 20px 0 20px;
                 border-bottom: 1px solid #282828;
                 transition: all 0.3s ease;
                 position: relative;
@@ -82,7 +83,6 @@
                 max-height: 0;
             }
             .title-container {
-                text-align: center;
                 width: 100%;
                 transition: all 0.3s ease;
             }
@@ -930,8 +930,6 @@
     <body>
         <div class="container">
             <div class="header-section">
-                <img src="img/menu/sinnersync.png" alt="Pocket LCB Logo" class="logo" onerror="this.style.display='none'">
-
                 <div class="title-container">
                     <div class="page-title">
                         E.G.O Gifts
@@ -947,7 +945,7 @@
                 <div class="home-content">
                     <p class="welcome-title">Welcome, Executive Manager</p>
                     <p class="welcome-subtitle">
-                        Pocket LCB is your comprehensive companion for Limbus Company, right here, in Telegram.
+                        SinnerSync is your comprehensive companion for Limbus Company, right here, in Telegram.
                     </p>
                     <div class="events-section">
                         <p class="events-title">Current Events</p>
@@ -1131,8 +1129,8 @@
         </div>
 
         <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
-        <script src="effects-data.js"></script>
-        <script src="gifts-data.js"></script>
+        <script src="data/effects.js"></script>
+        <script src="data/gifts.js"></script>
 
         <script>
             let currentGiftData = null;
@@ -1741,14 +1739,6 @@
             function toggleLogoVisibility(pageId) {
                 const headerSection = document.querySelector('.header-section');
                 const logo = document.querySelector('.logo');
-                
-                if (pageId === 'home') {
-                    headerSection.classList.remove('no-logo');
-                    logo.classList.remove('hidden');
-                } else {
-                    headerSection.classList.add('no-logo');
-                    logo.classList.add('hidden');
-                }
             }
     
             function updatePageTitle(pageId) {
