@@ -452,5 +452,14 @@ const giftsData = [
         sin: "lust",
         tier: 4,
         keyword: "bleed"
+    },
+    {
+        id: 51,
+        name: "Stone Tomb",
+        price: "196",
+        description: `Allies gain 1.5x <img class="description-icon" src="${getEffectImagePath('poise')}"> <span class="positive-text">Poise</span> Potency from Skill effects.<br><br>When an ally defeats an enemy with a Sloth Affinity Skill, they gain 2 <img class="description-icon" src="${getEffectImagePath('poise')}"> <span class="positive-text">Poise</span> Potency and +2 <img class="description-icon" src="${getEffectImagePath('poise')}"> <span class="positive-text">Poise</span> Count at the next Turn Start. (Once per turn)`,
+        sin: "sloth",
+        tier: 2,
+        keyword: "poise"
     }
 ];
