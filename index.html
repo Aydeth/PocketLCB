@@ -928,27 +928,26 @@
                 transform: none;
             }
             /* Новая навигационная панель */
-            .nav-tabs {
+            /* Новая навигационная панель */
+.nav-tabs {
     display: flex;
     width: 100%;
     margin-top: 10px;
     border-bottom: 1px solid #282828;
     overflow-x: auto;
+    overflow-y: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    cursor: grab;
+    scroll-behavior: smooth;
     padding-bottom: 2px;
 }
 .nav-tabs::-webkit-scrollbar {
     display: none;
 }
-.nav-tabs:active {
-    cursor: grabbing;
-}
 .nav-tab {
     flex: 0 0 auto;
     text-align: center;
-    padding: 12px 16px;
+    padding: 12px 20px;
     font-family: 'SCDream', Arial, sans-serif;
     font-size: 0.9rem;
     font-weight: 500;
@@ -963,10 +962,6 @@
     -ms-user-select: none;
     user-select: none;
     white-space: nowrap;
-}
-.nav-tabs.grabbing {
-    cursor: grabbing;
-    user-select: none;
 }
             .nav-tab::after {
                 content: '';
@@ -1819,69 +1814,28 @@
             }
             
             function initializeNavigation() {
-                document.querySelectorAll('.nav-tab').forEach(tab => {
-                    tab.addEventListener('click', () => {
-                        const page = tab.dataset.page;
-                        switchPage(page);
-                    });
-                });
-                
-                document.querySelectorAll('.section-button').forEach(button => {
-                    button.addEventListener('click', () => {
-                        const page = button.dataset.page;
-                        switchPage(page);
-                    });
-                });
-            }
-
-            function initializeNavScroll() {
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const page = tab.dataset.page;
+            switchPage(page);
+        });
+    });
+    
+    document.querySelectorAll('.section-button').forEach(button => {
+        button.addEventListener('click', () => {
+            const page = button.dataset.page;
+            switchPage(page);
+        });
+    });
+    
+    // Добавь колесико мыши для горизонтального скролла
     const navTabs = document.querySelector('.nav-tabs');
-    let isDragging = false;
-    let startX;
-    let scrollLeft;
-
-    navTabs.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        navTabs.classList.add('grabbing');
-        startX = e.pageX - navTabs.offsetLeft;
-        scrollLeft = navTabs.scrollLeft;
-    });
-
-    navTabs.addEventListener('mouseleave', () => {
-        isDragging = false;
-        navTabs.classList.remove('grabbing');
-    });
-
-    navTabs.addEventListener('mouseup', () => {
-        isDragging = false;
-        navTabs.classList.remove('grabbing');
-    });
-
-    navTabs.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        e.preventDefault();
-        const x = e.pageX - navTabs.offsetLeft;
-        const walk = (x - startX) * 2;
-        navTabs.scrollLeft = scrollLeft - walk;
-    });
-
-    // Touch events for mobile
-    navTabs.addEventListener('touchstart', (e) => {
-        isDragging = true;
-        startX = e.touches[0].pageX - navTabs.offsetLeft;
-        scrollLeft = navTabs.scrollLeft;
-    });
-
-    navTabs.addEventListener('touchend', () => {
-        isDragging = false;
-    });
-
-    navTabs.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        const x = e.touches[0].pageX - navTabs.offsetLeft;
-        const walk = (x - startX) * 2;
-        navTabs.scrollLeft = scrollLeft - walk;
-    });
+    if (navTabs) {
+        navTabs.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            navTabs.scrollLeft += e.deltaY;
+        });
+    }
 }
     
             document.addEventListener('DOMContentLoaded', function() {
@@ -2069,7 +2023,6 @@
                 
                 setInterval(updateAllTimers, 1000);
                 
-                initializeNavScroll();
                 initializeNavigation();
                 switchPage('home');
                 initializeGrid();
